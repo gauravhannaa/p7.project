@@ -1,15 +1,14 @@
-import axios from 'axios';
+import React from 'react';
+import MatrixBackground from './components/MatrixBackground';
+import TerminalDashboard from './components/TerminalDashboard';
 
-const API_URL = 'https://p7-project-1.onrender.com/api';
+function App() {
+  return (
+    <div className="relative min-h-screen">
+      <MatrixBackground />
+      <TerminalDashboard />
+    </div>
+  );
+}
 
-const api = axios.create({
-  baseURL: API_URL,
-});
-
-export const fetchSkills = () => api.get('/skills');
-export const fetchExperiences = () => api.get('/experiences');
-export const fetchProjects = () => api.get('/projects');
-export const fetchReports = () => api.get('/reports');
-export const submitContact = (data) => api.post('/contact', data);
-
-export default api;
+export default App;

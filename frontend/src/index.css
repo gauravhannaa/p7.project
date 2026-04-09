@@ -21,22 +21,58 @@
   .animate-blink {
     animation: blink 1s step-end infinite;
   }
+
+  @keyframes glow {
+    from {
+      text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41;
+    }
+    to {
+      text-shadow: 0 0 20px #00ff41, 0 0 30px #00ff41;
+    }
+  }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar for whole page */
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: #0a0a0a;
 }
-
 ::-webkit-scrollbar-thumb {
   background: #00ff41;
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: #00cc34;
+}
+
+/* Terminal output specific scrollbar */
+.terminal-output::-webkit-scrollbar {
+  width: 6px;
+}
+.terminal-output::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+.terminal-output::-webkit-scrollbar-thumb {
+  background: #00ff41;
+  border-radius: 3px;
+}
+
+/* Glassmorphism card effect */
+.glass-card {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 255, 65, 0.2);
+  border-radius: 16px;
+}
+
+/* Ensure canvas elements display properly */
+canvas {
+  display: block;
+}
+
+/* Preserve monospace for pre elements */
+pre {
+  font-family: 'Courier New', monospace;
 }
