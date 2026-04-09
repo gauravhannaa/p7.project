@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://p7-project-1.onrender.com/api';
 let token = localStorage.getItem('adminToken');
 
 if (!token) {

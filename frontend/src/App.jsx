@@ -37,7 +37,7 @@ function App() {
         <Contact />
       </main>
       <footer className="py-6 text-center border-t border-hacker-green/20 text-gray-500 text-sm">
-        <p>&copy; 2024 Gaurav Tiwari. All rights reserved. | Securing the digital world 🔐</p>
+        <p>&copy; 2024 Gaurav hanna. All rights reserved. | Securing the digital world 🔐</p>
       </footer>
     </div>
   );

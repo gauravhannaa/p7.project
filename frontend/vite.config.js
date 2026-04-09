@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'https://p7-project-1.onrender.com/api,
         changeOrigin: true,
       }
     }
