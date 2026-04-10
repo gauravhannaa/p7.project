@@ -1,37 +1,56 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import MatrixBackground from './components/MatrixBackground';
-import TerminalDashboard from './components/TerminalDashboard';
-import IntroAnimation from './components/IntroAnimation';
-import AboutPage from './pages/AboutPage';
-import SkillsPage from './pages/SkillsPage';
-import ExperiencePage from './pages/ExperiencePage';
-import ProjectsPage from './pages/ProjectsPage';
-import ReportsPage from './pages/ReportsPage';
-import ContactPage from './pages/ContactPage';
+import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import UltraIntro from "./components/UltraIntro"; // upgraded intro
+import Dashboard from "./pages/Dashboard";
+import ProjectsPage from "./pages/ProjectsPage";
+import RepositoriesPage from "./pages/RepositoriesPage";
+import AboutPage from "./pages/AboutPage";
+import StatsPage from "./pages/StatsPage";
+import CertificationsPage from "./pages/CertificationsPage";
+import ExperiencePage from "./pages/ExperiencePage";
+import ContactPage from "./pages/ContactPage";
+import ResumePage from "./pages/ResumePage";
+
+function AnimatedRoutes() {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="/repositories" element={<RepositoriesPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/stats" element={<StatsPage />} />
+        <Route path="/certifications" element={<CertificationsPage />} />
+        <Route path="/experience" element={<ExperiencePage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/resume" element={<ResumePage />} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
 
 function App() {
   const [showIntro, setShowIntro] = useState(true);
   
-  const handleIntroComplete = () => {
-    setShowIntro(false);
-  };
+  useEffect(() => {
+    // Only show intro once per session (optional)
+    const hasSeenIntro = sessionStorage.getItem("introSeen");
+    if (hasSeenIntro) {
+      setShowIntro(false);
+    } else {
+      sessionStorage.setItem("introSeen", "true");
+    }
+  }, []);
+  
+  if (showIntro) {
+    return <UltraIntro onComplete={() => setShowIntro(false)} />;
+  }
   
   return (
     <Router>
-      <div className="relative min-h-screen">
-        <MatrixBackground />
-        {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
-        <Routes>
-          <Route path="/" element={<TerminalDashboard />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/skills" element={<SkillsPage />} />
-          <Route path="/experience" element={<ExperiencePage />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/reports" element={<ReportsPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-        </Routes>
-      </div>
+      <AnimatedRoutes />
     </Router>
   );
 }

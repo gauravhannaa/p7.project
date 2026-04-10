@@ -5,17 +5,28 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import connectDB from './config/db.js';
 import { createDefaultAdmin } from './controllers/authController.js';
+
+// Routes
 import authRoutes from './routes/authRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 import experienceRoutes from './routes/experienceRoutes.js';
 import skillRoutes from './routes/skillRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
+import profileRoutes from './routes/profileRoutes.js';
+import certificationRoutes from './routes/certificationRoutes.js';
+import repositoryRoutes from './routes/repositoryRoutes.js';
 
-// Import models for seeding
+// Models for seeding
 import Experience from './models/Experience.js';
 import Skill from './models/Skill.js';
 import Report from './models/Report.js';
+import Profile from './models/Profile.js';
+import Certification from './models/Certification.js';
+import Repository from './models/Repository.js';
+
+// Upload controller
+import { upload, uploadProfileImage } from './controllers/uploadController.js';
 
 dotenv.config();
 
@@ -30,9 +41,29 @@ connectDB();
 // Create default admin user
 createDefaultAdmin();
 
-// Seed resume data (only if collections are empty)
+// ---------------------- SEEDING FUNCTION ----------------------
 async function seedResumeData() {
   try {
+    // ----- PROFILE -----
+    const profileCount = await Profile.countDocuments();
+    if (profileCount === 0) {
+      await Profile.create({
+        name: "Gaurav Tiwari",
+        username: "gauravhanna",
+        title: "Customer & Technical Support Engineer | DevOps Enthusiast",
+        bio: "Hands-on experience in L1/L2 desktop support, Windows troubleshooting, onsite IT operations at Maruti Suzuki India Ltd. Passionate about cloud, automation, and cybersecurity.",
+        location: "Gurgaon, India",
+        email: "gauravhanna2003@gmail.com",
+        phone: "+91 9664609473",
+        github: "https://github.com/gauravhannaa",
+        linkedin: "https://linkedin.com/in/gaurav-tiwari",
+        instagram: "https://instagram.com/mrx_gaurav__007",
+        profileImage: "",
+        resumeUrl: "",
+      });
+      console.log("✅ Seeded default profile");
+    }
+
     // ----- EXPERIENCE -----
     const expCount = await Experience.countDocuments();
     if (expCount === 0) {
@@ -79,7 +110,9 @@ async function seedResumeData() {
         { name: "Python", percentage: 65, category: "Programming" },
         { name: "SQL", percentage: 70, category: "Database" },
         { name: "MS Office & Outlook", percentage: 85, category: "Productivity" },
-        { name: "Ticketing & CRM Tools", percentage: 80, category: "Tools" }
+        { name: "Ticketing & CRM Tools", percentage: 80, category: "Tools" },
+        { name: "AWS", percentage: 60, category: "Cloud" },
+        { name: "Docker", percentage: 55, category: "Container" }
       ]);
       console.log("✅ Seeded skills from resume");
     }
@@ -116,28 +149,83 @@ async function seedResumeData() {
       ]);
       console.log("✅ Seeded certificates as reports from resume");
     }
+
+    // ----- CERTIFICATIONS (new model) -----
+    const certCount = await Certification.countDocuments();
+    if (certCount === 0) {
+      await Certification.insertMany([
+        {
+          title: "AWS Certified Cloud Practitioner",
+          issuer: "Amazon Web Services",
+          date: "2023",
+          credentialId: "AWS-CCP-12345",
+          verifyUrl: "#"
+        },
+        {
+          title: "Certified Kubernetes Administrator (CKA)",
+          issuer: "CNCF",
+          date: "In Progress",
+          credentialId: "CKA-67890",
+          verifyUrl: "#"
+        }
+      ]);
+      console.log("✅ Seeded certifications");
+    }
+
+    // ----- REPOSITORIES -----
+    const repoCount = await Repository.countDocuments();
+    if (repoCount === 0) {
+      await Repository.insertMany([
+        {
+          name: "k8s-deployment-tool",
+          description: "CLI tool for deploying apps to Kubernetes",
+          language: "Go",
+          stars: 12,
+          forks: 3,
+          updated: "2025-01-15",
+          url: "#"
+        },
+        {
+          name: "aws-terraform-modules",
+          description: "Reusable Terraform modules for AWS",
+          language: "HCL",
+          stars: 8,
+          forks: 2,
+          updated: "2025-02-01",
+          url: "#"
+        }
+      ]);
+      console.log("✅ Seeded repositories");
+    }
+
   } catch (error) {
-    console.error("Error seeding resume data:", error);
+    console.error("Error seeding data:", error);
   }
 }
 
-// Run seeding after database connection and admin creation
+// Run seeding after DB connection
 (async () => {
   await seedResumeData();
 })();
 
-// Middleware
+// ---------------------- MIDDLEWARE ----------------------
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes
+// ---------------------- API ROUTES ----------------------
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/experiences', experienceRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api/certifications', certificationRoutes);
+app.use('/api/repositories', repositoryRoutes);
+
+// Profile photo upload (protected route)
+app.post('/api/upload/profile-image', upload.single('image'), uploadProfileImage);
 
 // Serve admin dashboard static files
 app.use('/admin-dashboard', express.static(path.join(__dirname, '../admin-dashboard')));
@@ -147,8 +235,8 @@ app.get('/', (req, res) => {
   res.json({ message: 'Cyber Security Portfolio API' });
 });
 
-// Start server
+// ---------------------- START SERVER ----------------------
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
