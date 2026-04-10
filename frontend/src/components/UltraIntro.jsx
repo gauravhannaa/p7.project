@@ -7,6 +7,8 @@ const UltraIntro = ({ onComplete }) => {
   const [accessGranted, setAccessGranted] = useState(false);
   const [showSanskrit, setShowSanskrit] = useState(false);
   const [currentShloka, setCurrentShloka] = useState('');
+  const [shlokaMeaning, setShlokaMeaning] = useState('');
+  const [typedShloka, setTypedShloka] = useState('');
   const canvasRef = useRef(null);
 
   const bootSequence = [
@@ -19,27 +21,32 @@ const UltraIntro = ({ onComplete }) => {
     'Access Control Verified...'
   ];
 
-  // Sanskrit shlokas (short verses)
-  const sanskritVerses = [
-    'ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं',
-    'यदा यदा हि धर्मस्य ग्लानिर्भवति',
-    'कर्मण्येवाधिकारस्ते मा फलेषु',
-    'वसांसि जीर्णानि यथा विहाय',
-    'नैनं छिन्दन्ति शस्त्राणि',
-    'अहिंसा परमो धर्मः',
-    'सत्यमेव जयते',
-    'विद्या ददाति विनयम्'
+  // Rich Sanskrit shlokas with meanings
+  const shlokaDatabase = [
+    { sanskrit: 'ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि धियो यो नः प्रचोदयात्', meaning: 'We meditate on the glory of the Creator; may He enlighten our minds.' },
+    { sanskrit: 'यदा यदा हि धर्मस्य ग्लानिर्भवति भारत। अभ्युत्थानमधर्मस्य तदात्मानं सृजाम्यहम्॥', meaning: 'Whenever there is decay of righteousness, O Bharata, I manifest Myself.' },
+    { sanskrit: 'कर्मण्येवाधिकारस्ते मा फलेषु कदाचन। मा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि॥', meaning: 'You have a right to perform your duty, but not to the fruits thereof.' },
+    { sanskrit: 'वसांसि जीर्णानि यथा विहाय नवानि गृह्णाति नरोऽपराणि। तथा शरीराणि विहाय जीर्णान्यन्यानि संयाति नवानि देही॥', meaning: 'As a person sheds worn-out garments and wears new ones, likewise the soul casts off old bodies and enters new ones.' },
+    { sanskrit: 'नैनं छिन्दन्ति शस्त्राणि नैनं दहति पावकः। न चैनं क्लेदयन्त्यापो न शोषयति मारुतः॥', meaning: 'Weapons cannot cut it, fire cannot burn it, water cannot wet it, wind cannot dry it.' },
+    { sanskrit: 'अहिंसा परमो धर्मः सत्यं परमं तपः। सर्वं क्षमया तपस्तप्यं न हि क्षमा समं तपः॥', meaning: 'Non-violence is the highest duty, truth is the highest austerity.' },
   ];
 
-  // Matrix rain canvas
+  // Select a random shloka when intro starts
+  const [selectedShloka] = useState(() => {
+    const randomIndex = Math.floor(Math.random() * shlokaDatabase.length);
+    return shlokaDatabase[randomIndex];
+  });
+
+  // Matrix rain with Sanskrit characters
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let animationId;
-    let fontSize = 16;
+    let fontSize = 18;
     let columns, drops;
 
+    const chars = '01ॐअआइईउऊएऐओऔकखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह';
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -49,7 +56,6 @@ const UltraIntro = ({ onComplete }) => {
     window.addEventListener('resize', resize);
     resize();
 
-    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
     const draw = () => {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -95,29 +101,30 @@ const UltraIntro = ({ onComplete }) => {
           interval = setTimeout(typeNextLine, 200);
         }
       } else {
-        // Boot sequence finished -> show Sanskrit welcome
         setProgress(100);
         setShowSanskrit(true);
-        // Rotate Sanskrit verses every 1.5 seconds
-        let verseIndex = 0;
-        const verseInterval = setInterval(() => {
-          setCurrentShloka(sanskritVerses[verseIndex % sanskritVerses.length]);
-          verseIndex++;
-        }, 1500);
-        // After 4 seconds, show ACCESS GRANTED and then exit
+        // Typing effect for Sanskrit shloka
+        setCurrentShloka(selectedShloka.sanskrit);
+        setShlokaMeaning(selectedShloka.meaning);
+        let shlokaCharIndex = 0;
+        const shlokaInterval = setInterval(() => {
+          if (shlokaCharIndex <= selectedShloka.sanskrit.length) {
+            setTypedShloka(selectedShloka.sanskrit.slice(0, shlokaCharIndex));
+            shlokaCharIndex++;
+          } else {
+            clearInterval(shlokaInterval);
+          }
+        }, 30);
         setTimeout(() => {
-          clearInterval(verseInterval);
           setAccessGranted(true);
-          setTimeout(() => {
-            onComplete();
-          }, 2000);
-        }, 4000);
+          setTimeout(() => onComplete(), 2000);
+        }, 5000);
       }
     };
 
     typeNextLine();
     return () => clearTimeout(interval);
-  }, [bootSequence, onComplete, sanskritVerses]);
+  }, [bootSequence, onComplete, selectedShloka]);
 
   // Glitch title
   const [glitchText, setGlitchText] = useState('root@secure-system:~$');
@@ -159,7 +166,7 @@ const UltraIntro = ({ onComplete }) => {
             </span>
           </div>
 
-          <div className="font-mono text-sm space-y-1 mb-6 min-h-[300px]">
+          <div className="font-mono text-sm space-y-1 mb-6 min-h-[350px]">
             {bootLines.map((line, idx) => (
               <motion.div
                 key={idx}
@@ -178,12 +185,15 @@ const UltraIntro = ({ onComplete }) => {
                 transition={{ duration: 0.5 }}
                 className="mt-4 pt-3 border-t border-neon/30 text-center"
               >
-                <div className="text-2xl font-bold text-neon mb-2">{currentShloka}</div>
-                <div className="text-lg text-green-300">यथा कर्म तथा फलम् ॥</div>
-                <div className="text-sm text-gray-400 mt-2">As you act, so shall you reap</div>
-                <div className="text-md text-neon mt-4 animate-pulse">
-                  🙏 Welcome to Gaurav Hanna's Cyber Portfolio 🙏
+                <div className="text-xl font-bold text-neon mb-2">
+                  {typedShloka}
+                  <span className="animate-blink">_</span>
                 </div>
+                <div className="text-sm text-green-300 italic">{shlokaMeaning}</div>
+                <div className="text-md text-neon mt-4 animate-pulse">
+                  🙏 स्वागतम् 🙏
+                </div>
+                <div className="text-sm text-gray-400">Welcome to Gaurav Hanna's Cyber Portfolio</div>
               </motion.div>
             )}
             {accessGranted && (
@@ -215,6 +225,11 @@ const UltraIntro = ({ onComplete }) => {
             </div>
           )}
         </motion.div>
+
+        {/* Animated ॐ in corner */}
+        <div className="absolute bottom-6 right-6 text-4xl text-neon/30 animate-pulse">
+          ॐ
+        </div>
       </motion.div>
     </AnimatePresence>
   );
