@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import UltraIntro from "./components/UltraIntro"; // upgraded intro
+import UltraIntro from "./components/UltraIntro";
 import Dashboard from "./pages/Dashboard";
 import ProjectsPage from "./pages/ProjectsPage";
 import RepositoriesPage from "./pages/RepositoriesPage";
@@ -12,6 +12,7 @@ import ExperiencePage from "./pages/ExperiencePage";
 import ContactPage from "./pages/ContactPage";
 import ResumePage from "./pages/ResumePage";
 
+// AnimatedRoutes component with page transitions
 function AnimatedRoutes() {
   const location = useLocation();
   return (
@@ -33,9 +34,9 @@ function AnimatedRoutes() {
 
 function App() {
   const [showIntro, setShowIntro] = useState(true);
-  
+
   useEffect(() => {
-    // Only show intro once per session (optional)
+    // Only show intro once per browser session
     const hasSeenIntro = sessionStorage.getItem("introSeen");
     if (hasSeenIntro) {
       setShowIntro(false);
@@ -43,11 +44,13 @@ function App() {
       sessionStorage.setItem("introSeen", "true");
     }
   }, []);
-  
+
+  // If intro is still showing, render it
   if (showIntro) {
     return <UltraIntro onComplete={() => setShowIntro(false)} />;
   }
-  
+
+  // After intro, render the main app with router
   return (
     <Router>
       <AnimatedRoutes />

@@ -25,7 +25,7 @@ import Profile from './models/Profile.js';
 import Certification from './models/Certification.js';
 import Repository from './models/Repository.js';
 
-// Upload controller
+// Upload controller (with fallback if Cloudinary not configured)
 import { upload, uploadProfileImage } from './controllers/uploadController.js';
 
 dotenv.config();
@@ -36,9 +36,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Connect to MongoDB
-connectDB();
+connectDB().catch(err => console.error('MongoDB connection error:', err));
 
-// Create default admin user
+// Create default admin user (with fallback values)
 createDefaultAdmin();
 
 // ---------------------- SEEDING FUNCTION ----------------------
@@ -203,15 +203,20 @@ async function seedResumeData() {
   }
 }
 
-// Run seeding after DB connection
-(async () => {
-  await seedResumeData();
-})();
+// Run seeding after DB connection (but don't block server startup)
+setTimeout(() => {
+  seedResumeData().catch(console.error);
+}, 2000);
 
 // ---------------------- MIDDLEWARE ----------------------
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Static files for uploads (create folder if missing)
+const uploadsPath = path.join(__dirname, 'uploads');
+import fs from 'fs';
+if (!fs.existsSync(uploadsPath)) fs.mkdirSync(uploadsPath, { recursive: true });
+app.use('/uploads', express.static(uploadsPath));
 
 // ---------------------- API ROUTES ----------------------
 app.use('/api/auth', authRoutes);
@@ -224,15 +229,31 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/certifications', certificationRoutes);
 app.use('/api/repositories', repositoryRoutes);
 
-// Profile photo upload (protected route)
-app.post('/api/upload/profile-image', upload.single('image'), uploadProfileImage);
+// Profile photo upload (only if Cloudinary is configured, else ignore)
+if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY) {
+  app.post('/api/upload/profile-image', upload.single('image'), uploadProfileImage);
+  console.log('✅ Cloudinary upload route enabled');
+} else {
+  console.log('⚠️ Cloudinary not configured – upload route disabled');
+}
 
-// Serve admin dashboard static files
-app.use('/admin-dashboard', express.static(path.join(__dirname, '../admin-dashboard')));
+// Serve admin dashboard static files (ensure the folder exists)
+const adminDashboardPath = path.join(__dirname, '../admin-dashboard');
+if (fs.existsSync(adminDashboardPath)) {
+  app.use('/admin-dashboard', express.static(adminDashboardPath));
+  console.log('✅ Admin dashboard served from', adminDashboardPath);
+} else {
+  console.log('⚠️ Admin dashboard folder not found at', adminDashboardPath);
+}
 
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({ message: 'Cyber Security Portfolio API' });
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
 });
 
 // ---------------------- START SERVER ----------------------
