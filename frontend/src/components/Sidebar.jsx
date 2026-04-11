@@ -1,11 +1,14 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Home, FolderGit2, Database, User, BarChart3, Award, Briefcase, Mail, FileText, Sun, Moon, Copy } from "lucide-react";
+import { Home, FolderGit2, Database, User, BarChart3, Award, Briefcase, Mail, FileText, Sun, Moon, Copy, Shield } from "lucide-react";
 import { profile } from "../data/portfolioData";
 import { toast } from "react-hot-toast";
+import { useAdmin } from "../context/AdminContext";
 
 const Sidebar = ({ darkMode, toggleDarkMode }) => {
   const navigate = useNavigate();
+  const { isAdmin } = useAdmin();
+  
   const copyEmail = () => {
     navigator.clipboard.writeText(profile.email);
     toast.success("Email copied to clipboard!");
@@ -31,8 +34,13 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
       className="fixed left-0 top-0 h-full w-64 bg-black/80 backdrop-blur-sm border-r border-neon/30 z-40 flex flex-col p-4"
     >
       <div className="flex flex-col items-center mb-8">
-        <div className="w-20 h-20 rounded-full border-2 border-neon flex items-center justify-center mb-3">
+        <div className="w-20 h-20 rounded-full border-2 border-neon flex items-center justify-center mb-3 relative">
           <span className="text-4xl">👨‍💻</span>
+          {isAdmin && (
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center">
+              <Shield size={12} className="text-black" />
+            </div>
+          )}
         </div>
         <h2 className="text-xl font-bold text-neon">{profile.name}</h2>
         <p className="text-xs text-neon/70">{profile.role}</p>

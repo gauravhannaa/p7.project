@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
+import { AdminProvider, useAdmin } from "./context/AdminContext";
 import UltraIntro from "./components/UltraIntro";
 import Dashboard from "./pages/Dashboard";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -11,10 +12,14 @@ import CertificationsPage from "./pages/CertificationsPage";
 import ExperiencePage from "./pages/ExperiencePage";
 import ContactPage from "./pages/ContactPage";
 import ResumePage from "./pages/ResumePage";
+import AdminDashboard from "./components/AdminDashboard";
+import AdminLogin from "./components/AdminLogin";
 
 // AnimatedRoutes component with page transitions
 function AnimatedRoutes() {
   const location = useLocation();
+  const { isAdmin } = useAdmin();
+  
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
@@ -27,16 +32,17 @@ function AnimatedRoutes() {
         <Route path="/experience" element={<ExperiencePage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/resume" element={<ResumePage />} />
+        <Route path="/admin" element={isAdmin ? <AdminDashboard /> : <AdminLogin />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>
     </AnimatePresence>
   );
 }
 
-function App() {
+function AppContent() {
   const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
-    // Only show intro once per browser session
     const hasSeenIntro = sessionStorage.getItem("introSeen");
     if (hasSeenIntro) {
       setShowIntro(false);
@@ -45,16 +51,22 @@ function App() {
     }
   }, []);
 
-  // If intro is still showing, render it
   if (showIntro) {
     return <UltraIntro onComplete={() => setShowIntro(false)} />;
   }
 
-  // After intro, render the main app with router
   return (
     <Router>
       <AnimatedRoutes />
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <AdminProvider>
+      <AppContent />
+    </AdminProvider>
   );
 }
 

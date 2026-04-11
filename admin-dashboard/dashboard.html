@@ -5,158 +5,622 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | Cyber Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
+            font-family: 'Courier New', monospace;
+        }
+        .glass-panel {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            border-radius: 12px;
+        }
+        .btn-neon {
+            border: 1px solid #00ff41;
+            transition: all 0.3s;
+        }
+        .btn-neon:hover {
+            background: rgba(0, 255, 65, 0.2);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+        }
+        .section {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hidden { display: none; }
+        input, textarea, select {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            color: #00ff41;
+            padding: 8px 12px;
+            border-radius: 6px;
+            outline: none;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #00ff41;
+            box-shadow: 0 0 5px rgba(0, 255, 65, 0.3);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid rgba(0, 255, 65, 0.5);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 4px;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
 </head>
-<body class="bg-black text-green-500 font-mono">
-    <nav class="bg-black/90 border-b border-green-500/30 p-4 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold glow-text">&lt; Admin Dashboard /&gt;</h1>
-            <button id="logoutBtn" class="px-4 py-2 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-black transition">Logout</button>
-        </div>
-    </nav>
-    
-    <div class="max-w-7xl mx-auto p-4">
-        <!-- Navigation buttons -->
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
-            <button onclick="showSection('profile')" class="bg-gray-900 border border-green-500/30 rounded-lg p-3 hover:border-green-500 transition text-sm">👤 Profile</button>
-            <button onclick="showSection('skills')" class="bg-gray-900 border border-green-500/30 rounded-lg p-3 hover:border-green-500 transition text-sm">⚡ Skills</button>
-            <button onclick="showSection('projects')" class="bg-gray-900 border border-green-500/30 rounded-lg p-3 hover:border-green-500 transition text-sm">📁 Projects</button>
-            <button onclick="showSection('experience')" class="bg-gray-900 border border-green-500/30 rounded-lg p-3 hover:border-green-500 transition text-sm">💼 Experience</button>
-            <button onclick="showSection('reports')" class="bg-gray-900 border border-green-500/30 rounded-lg p-3 hover:border-green-500 transition text-sm">📄 Reports</button>
-            <button onclick="showSection('certifications')" class="bg-gray-900 border border-green-500/30 rounded-lg p-3 hover:border-green-500 transition text-sm">🎓 Certifications</button>
-            <button onclick="showSection('repositories')" class="bg-gray-900 border border-green-500/30 rounded-lg p-3 hover:border-green-500 transition text-sm">📚 Repos</button>
-            <button onclick="showSection('contacts')" class="bg-gray-900 border border-green-500/30 rounded-lg p-3 hover:border-green-500 transition text-sm">📬 Contacts</button>
-        </div>
-        
-        <!-- ================= PROFILE SECTION ================= -->
-        <div id="profileSection" class="section hidden">
-            <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-6">
-                <h2 class="text-2xl font-bold mb-4">Edit Profile</h2>
-                <form id="profileForm" class="space-y-4">
-                    <input type="text" id="profileName" placeholder="Full Name" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="text" id="profileTitle" placeholder="Title" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <textarea id="profileBio" placeholder="Bio" rows="3" class="w-full bg-black border border-green-500/30 rounded px-3 py-2"></textarea>
-                    <input type="text" id="profileLocation" placeholder="Location" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="email" id="profileEmail" placeholder="Email" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="text" id="profilePhone" placeholder="Phone" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="url" id="profileGithub" placeholder="GitHub URL" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="url" id="profileLinkedin" placeholder="LinkedIn URL" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="url" id="profileInstagram" placeholder="Instagram URL" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <div>
-                        <label class="block text-green-500 mb-2">Profile Photo</label>
-                        <input type="file" id="profilePhoto" accept="image/*" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                        <button type="button" id="uploadPhotoBtn" class="mt-2 px-4 py-2 bg-green-500 text-black rounded hover:bg-green-600">Upload Photo</button>
-                        <div id="currentPhoto" class="mt-2 text-sm"></div>
-                    </div>
-                    <button type="submit" class="bg-green-500 text-black px-6 py-2 rounded hover:bg-green-600">Update Profile</button>
-                </form>
-                <div id="profileMessage" class="mt-4 text-green-500 hidden"></div>
+<body>
+
+<!-- Scanline Effect -->
+<div class="fixed inset-0 pointer-events-none z-50 bg-gradient-to-b from-transparent via-green-500/5 to-transparent bg-[length:100%_4px] animate-[scan_8s_linear_infinite]" style="animation: scan 8s linear infinite;"></div>
+
+<style>
+    @keyframes scan {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100%); }
+    }
+</style>
+
+<div class="container mx-auto p-6 max-w-7xl relative z-10">
+    <!-- Header -->
+    <div class="glass-panel p-6 mb-6">
+        <div class="flex justify-between items-center flex-wrap gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-green-400">
+                    ⚙️ ADMIN DASHBOARD
+                    <span class="text-xs ml-2 status-badge">SECURE TERMINAL</span>
+                </h1>
+                <p class="text-sm text-gray-400 mt-1">&gt; Cyber Portfolio Management System v2.0</p>
             </div>
-        </div>
-        
-        <!-- ================= SKILLS SECTION ================= -->
-        <div id="skillsSection" class="section hidden">
-            <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-6 mb-6">
-                <h2 class="text-2xl font-bold mb-4">Add New Skill</h2>
-                <form id="skillForm" class="space-y-4">
-                    <input type="text" id="skillName" placeholder="Skill Name" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="number" id="skillPercent" placeholder="Percentage (0-100)" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <button type="submit" class="bg-green-500 text-black px-6 py-2 rounded hover:bg-green-600">Add Skill</button>
-                </form>
+            <div class="flex gap-3">
+                <button onclick="refreshCurrentSection()" class="px-4 py-2 btn-neon rounded flex items-center gap-2">
+                    🔄 Refresh
+                </button>
+                <button id="logoutBtn" class="px-4 py-2 btn-neon rounded flex items-center gap-2">
+                    🚪 Logout
+                </button>
             </div>
-            <div id="skillsList" class="space-y-4"></div>
-        </div>
-        
-        <!-- ================= PROJECTS SECTION ================= -->
-        <div id="projectsSection" class="section hidden">
-            <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-6 mb-6">
-                <h2 class="text-2xl font-bold mb-4">Add New Project</h2>
-                <form id="projectForm" class="space-y-4">
-                    <input type="text" id="projectTitle" placeholder="Title" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <textarea id="projectDesc" placeholder="Description" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2"></textarea>
-                    <input type="text" id="projectTech" placeholder="Technologies (comma separated)" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="url" id="projectDemo" placeholder="Demo URL" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="url" id="projectGithub" placeholder="GitHub URL" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="text" id="projectStatus" placeholder="Status (e.g., Completed, In Progress)" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <button type="submit" class="bg-green-500 text-black px-6 py-2 rounded hover:bg-green-600">Add Project</button>
-                </form>
-            </div>
-            <div id="projectsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-        </div>
-        
-        <!-- ================= EXPERIENCE SECTION ================= -->
-        <div id="experienceSection" class="section hidden">
-            <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-6 mb-6">
-                <h2 class="text-2xl font-bold mb-4">Add Experience</h2>
-                <form id="experienceForm" class="space-y-4">
-                    <input type="text" id="expCompany" placeholder="Company" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="text" id="expRole" placeholder="Role" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="text" id="expStartDate" placeholder="Start Date (e.g., Jan 2022)" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="text" id="expEndDate" placeholder="End Date (leave blank if current)" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" id="expCurrent"> Currently working here
-                    </label>
-                    <textarea id="expResponsibilities" placeholder="Responsibilities (one per line)" rows="4" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2"></textarea>
-                    <button type="submit" class="bg-green-500 text-black px-6 py-2 rounded hover:bg-green-600">Add Experience</button>
-                </form>
-            </div>
-            <div id="experienceList" class="space-y-6"></div>
-        </div>
-        
-        <!-- ================= REPORTS SECTION (Certificates) ================= -->
-        <div id="reportsSection" class="section hidden">
-            <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-6 mb-6">
-                <h2 class="text-2xl font-bold mb-4">Add Report / Certificate</h2>
-                <form id="reportForm" class="space-y-4">
-                    <input type="text" id="reportTitle" placeholder="Title" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <textarea id="reportDesc" placeholder="Description" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2"></textarea>
-                    <input type="url" id="reportUrl" placeholder="PDF URL" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <button type="submit" class="bg-green-500 text-black px-6 py-2 rounded hover:bg-green-600">Add Report</button>
-                </form>
-            </div>
-            <div id="reportsList" class="space-y-4"></div>
-        </div>
-        
-        <!-- ================= CERTIFICATIONS SECTION ================= -->
-        <div id="certificationsSection" class="section hidden">
-            <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-6 mb-6">
-                <h2 class="text-2xl font-bold mb-4">Add Certification</h2>
-                <form id="certForm" class="space-y-4">
-                    <input type="text" id="certTitle" placeholder="Title" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="text" id="certIssuer" placeholder="Issuer" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="text" id="certDate" placeholder="Date (e.g., 2023)" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="text" id="certId" placeholder="Credential ID" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="url" id="certUrl" placeholder="Verify URL" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <button type="submit" class="bg-green-500 text-black px-6 py-2 rounded hover:bg-green-600">Add Certification</button>
-                </form>
-            </div>
-            <div id="certificationsList" class="space-y-4"></div>
-        </div>
-        
-        <!-- ================= REPOSITORIES SECTION ================= -->
-        <div id="repositoriesSection" class="section hidden">
-            <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-6 mb-6">
-                <h2 class="text-2xl font-bold mb-4">Add Repository</h2>
-                <form id="repoForm" class="space-y-4">
-                    <input type="text" id="repoName" placeholder="Repository Name" required class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="text" id="repoDesc" placeholder="Description" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="text" id="repoLang" placeholder="Language" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="number" id="repoStars" placeholder="Stars" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="number" id="repoForks" placeholder="Forks" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="text" id="repoUpdated" placeholder="Last updated (e.g., 2025-01-15)" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <input type="url" id="repoUrl" placeholder="Repository URL" class="w-full bg-black border border-green-500/30 rounded px-3 py-2">
-                    <button type="submit" class="bg-green-500 text-black px-6 py-2 rounded hover:bg-green-600">Add Repository</button>
-                </form>
-            </div>
-            <div id="repositoriesList" class="space-y-4"></div>
-        </div>
-        
-        <!-- ================= CONTACTS SECTION (read only) ================= -->
-        <div id="contactsSection" class="section hidden">
-            <div id="contactsList" class="space-y-4"></div>
         </div>
     </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex flex-wrap gap-2 mb-6">
+        <button onclick="showSection('profile')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="profile">👤 Profile</button>
+        <button onclick="showSection('skills')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="skills">⚡ Skills</button>
+        <button onclick="showSection('projects')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="projects">📁 Projects</button>
+        <button onclick="showSection('experience')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="experience">💼 Experience</button>
+        <button onclick="showSection('certifications')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="certifications">🎓 Certifications</button>
+        <button onclick="showSection('repositories')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="repositories">📚 Repositories</button>
+        <button onclick="showSection('reports')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="reports">📄 Reports</button>
+        <button onclick="showSection('contacts')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="contacts">✉️ Contacts</button>
+    </div>
+
+    <!-- ================= PROFILE SECTION ================= -->
+    <div id="profileSection" class="section glass-panel p-6 hidden">
+        <h2 class="text-2xl font-bold mb-4">👤 Profile Configuration</h2>
+        <div id="profileMessage" class="hidden bg-green-500/20 border border-green-500 rounded p-2 mb-4 text-center"></div>
+        <form id="profileForm" class="space-y-4">
+            <div class="grid md:grid-cols-2 gap-4">
+                <div><label class="block text-sm mb-1">Name</label><input type="text" id="profileName" class="w-full"></div>
+                <div><label class="block text-sm mb-1">Title/Role</label><input type="text" id="profileTitle" class="w-full"></div>
+                <div><label class="block text-sm mb-1">Email</label><input type="email" id="profileEmail" class="w-full"></div>
+                <div><label class="block text-sm mb-1">Phone</label><input type="text" id="profilePhone" class="w-full"></div>
+                <div><label class="block text-sm mb-1">Location</label><input type="text" id="profileLocation" class="w-full"></div>
+                <div><label class="block text-sm mb-1">GitHub URL</label><input type="text" id="profileGithub" class="w-full"></div>
+                <div><label class="block text-sm mb-1">LinkedIn URL</label><input type="text" id="profileLinkedin" class="w-full"></div>
+                <div><label class="block text-sm mb-1">Instagram URL</label><input type="text" id="profileInstagram" class="w-full"></div>
+                <div class="md:col-span-2"><label class="block text-sm mb-1">Bio</label><textarea id="profileBio" rows="3" class="w-full"></textarea></div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm mb-1">Profile Photo</label>
+                    <div class="flex gap-4 items-center flex-wrap">
+                        <div id="currentPhoto" class="w-20 h-20 rounded-full border-2 border-green-500 flex items-center justify-center bg-black/50 overflow-hidden"></div>
+                        <input type="file" id="profilePhoto" accept="image/*" class="flex-1">
+                        <button type="button" id="uploadPhotoBtn" class="px-4 py-2 btn-neon rounded">📸 Upload Photo</button>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="px-6 py-2 bg-green-500/20 border border-green-500 rounded hover:bg-green-500/30 transition">💾 Save Profile</button>
+        </form>
+    </div>
+
+    <!-- ================= SKILLS SECTION ================= -->
+    <div id="skillsSection" class="section glass-panel p-6 hidden">
+        <h2 class="text-2xl font-bold mb-4">⚡ Skills Management</h2>
+        <form id="skillForm" class="mb-6 p-4 border border-green-500/30 rounded">
+            <h3 class="font-bold mb-2">Add New Skill</h3>
+            <div class="grid md:grid-cols-3 gap-3">
+                <input type="text" id="skillName" placeholder="Skill Name" required>
+                <input type="number" id="skillPercent" placeholder="Percentage (0-100)" required>
+                <select id="skillCategory">
+                    <option value="Technical">Technical</option>
+                    <option value="Support">Support</option>
+                    <option value="Networking">Networking</option>
+                    <option value="Programming">Programming</option>
+                    <option value="Cloud">Cloud</option>
+                    <option value="Container">Container</option>
+                </select>
+            </div>
+            <button type="submit" class="mt-3 px-4 py-1 btn-neon rounded">➕ Add Skill</button>
+        </form>
+        <div id="skillsList" class="space-y-3"></div>
+    </div>
+
+    <!-- ================= PROJECTS SECTION ================= -->
+    <div id="projectsSection" class="section glass-panel p-6 hidden">
+        <h2 class="text-2xl font-bold mb-4">📁 Projects Management</h2>
+        <form id="projectForm" class="mb-6 p-4 border border-green-500/30 rounded">
+            <h3 class="font-bold mb-2">Add New Project</h3>
+            <div class="grid md:grid-cols-2 gap-3">
+                <input type="text" id="projectTitle" placeholder="Project Title" required>
+                <input type="text" id="projectStatus" placeholder="Status (e.g., Completed, In Progress)">
+                <textarea id="projectDesc" placeholder="Description" rows="2" required class="md:col-span-2"></textarea>
+                <input type="text" id="projectTech" placeholder="Technologies (comma separated)">
+                <input type="text" id="projectDemo" placeholder="Demo URL">
+                <input type="text" id="projectGithub" placeholder="GitHub URL">
+            </div>
+            <button type="submit" class="mt-3 px-4 py-1 btn-neon rounded">➕ Add Project</button>
+        </form>
+        <div id="projectsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </div>
+
+    <!-- ================= EXPERIENCE SECTION ================= -->
+    <div id="experienceSection" class="section glass-panel p-6 hidden">
+        <h2 class="text-2xl font-bold mb-4">💼 Experience Management</h2>
+        <form id="experienceForm" class="mb-6 p-4 border border-green-500/30 rounded">
+            <h3 class="font-bold mb-2">Add New Experience</h3>
+            <div class="grid md:grid-cols-2 gap-3">
+                <input type="text" id="expCompany" placeholder="Company" required>
+                <input type="text" id="expRole" placeholder="Role" required>
+                <input type="text" id="expStartDate" placeholder="Start Date (e.g., Jan 2023)" required>
+                <input type="text" id="expEndDate" placeholder="End Date (leave empty if current)">
+                <label class="flex items-center gap-2"><input type="checkbox" id="expCurrent"> Currently Working Here</label>
+                <textarea id="expResponsibilities" placeholder="Responsibilities (one per line)" rows="3" class="md:col-span-2"></textarea>
+            </div>
+            <button type="submit" class="mt-3 px-4 py-1 btn-neon rounded">➕ Add Experience</button>
+        </form>
+        <div id="experienceList" class="space-y-4"></div>
+    </div>
+
+    <!-- ================= CERTIFICATIONS SECTION ================= -->
+    <div id="certificationsSection" class="section glass-panel p-6 hidden">
+        <h2 class="text-2xl font-bold mb-4">🎓 Certifications Management</h2>
+        <form id="certForm" class="mb-6 p-4 border border-green-500/30 rounded">
+            <h3 class="font-bold mb-2">Add New Certification</h3>
+            <div class="grid md:grid-cols-2 gap-3">
+                <input type="text" id="certTitle" placeholder="Certification Title" required>
+                <input type="text" id="certIssuer" placeholder="Issuer" required>
+                <input type="text" id="certDate" placeholder="Date" required>
+                <input type="text" id="certId" placeholder="Credential ID">
+                <input type="text" id="certUrl" placeholder="Verify URL" class="md:col-span-2">
+            </div>
+            <button type="submit" class="mt-3 px-4 py-1 btn-neon rounded">➕ Add Certification</button>
+        </form>
+        <div id="certificationsList" class="space-y-3"></div>
+    </div>
+
+    <!-- ================= REPOSITORIES SECTION ================= -->
+    <div id="repositoriesSection" class="section glass-panel p-6 hidden">
+        <h2 class="text-2xl font-bold mb-4">📚 Repositories Management</h2>
+        <form id="repoForm" class="mb-6 p-4 border border-green-500/30 rounded">
+            <h3 class="font-bold mb-2">Add New Repository</h3>
+            <div class="grid md:grid-cols-2 gap-3">
+                <input type="text" id="repoName" placeholder="Repository Name" required>
+                <input type="text" id="repoLang" placeholder="Language">
+                <textarea id="repoDesc" placeholder="Description" rows="2" class="md:col-span-2"></textarea>
+                <input type="number" id="repoStars" placeholder="Stars">
+                <input type="number" id="repoForks" placeholder="Forks">
+                <input type="text" id="repoUpdated" placeholder="Last Updated (e.g., 2024-01-15)">
+                <input type="text" id="repoUrl" placeholder="Repository URL" class="md:col-span-2">
+            </div>
+            <button type="submit" class="mt-3 px-4 py-1 btn-neon rounded">➕ Add Repository</button>
+        </form>
+        <div id="repositoriesList" class="space-y-3"></div>
+    </div>
+
+    <!-- ================= REPORTS SECTION ================= -->
+    <div id="reportsSection" class="section glass-panel p-6 hidden">
+        <h2 class="text-2xl font-bold mb-4">📄 Reports/Certificates Management</h2>
+        <form id="reportForm" class="mb-6 p-4 border border-green-500/30 rounded">
+            <h3 class="font-bold mb-2">Add New Report</h3>
+            <div class="space-y-3">
+                <input type="text" id="reportTitle" placeholder="Report Title" required class="w-full">
+                <textarea id="reportDesc" placeholder="Description" rows="2" class="w-full"></textarea>
+                <input type="text" id="reportUrl" placeholder="PDF/File URL" class="w-full">
+            </div>
+            <button type="submit" class="mt-3 px-4 py-1 btn-neon rounded">➕ Add Report</button>
+        </form>
+        <div id="reportsList" class="space-y-3"></div>
+    </div>
+
+    <!-- ================= CONTACTS SECTION ================= -->
+    <div id="contactsSection" class="section glass-panel p-6 hidden">
+        <h2 class="text-2xl font-bold mb-4">✉️ Contact Messages</h2>
+        <div id="contactsList" class="space-y-4"></div>
+    </div>
+</div>
+
+<script>
+// ==================== CONFIGURATION ====================
+const API_URL = 'https://p7-project-1.onrender.com/api';
+let token = localStorage.getItem('adminToken');
+
+// Redirect if no token
+if (!token) {
+    window.location.href = 'admin-login.html';
+}
+
+// ==================== AUTH FETCH HELPER ====================
+async function fetchWithAuth(url, options = {}) {
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        ...options.headers
+    };
+    const response = await fetch(`${API_URL}${url}`, { ...options, headers });
+    if (response.status === 401) {
+        localStorage.removeItem('adminToken');
+        window.location.href = 'admin-login.html';
+    }
+    return response;
+}
+
+// ==================== TOAST NOTIFICATION ====================
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast px-6 py-3 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-500 text-black' : 'bg-red-500 text-white'}`;
+    toast.innerHTML = `<div class="flex items-center gap-3"><span>${type === 'success' ? '✅' : '❌'}</span><span>${message}</span></div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// ==================== SECTION MANAGEMENT ====================
+function showSection(section) {
+    document.querySelectorAll('.section').forEach(el => el.classList.add('hidden'));
+    document.getElementById(`${section}Section`).classList.remove('hidden');
     
-    <script src="dashboard.js"></script>
-</body>
-</html>
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-green-500/20', 'border-green-500');
+        btn.classList.add('border-green-500/50');
+    });
+    const activeBtn = document.querySelector(`[data-section="${section}"]`);
+    if (activeBtn) {
+        activeBtn.classList.add('bg-green-500/20', 'border-green-500');
+        activeBtn.classList.remove('border-green-500/50');
+    }
+    
+    loadSectionData(section);
+}
+
+function refreshCurrentSection() {
+    const visibleSection = document.querySelector('.section:not(.hidden)');
+    if (visibleSection && visibleSection.id) {
+        const sectionName = visibleSection.id.replace('Section', '');
+        loadSectionData(sectionName);
+    }
+}
+
+async function loadSectionData(section) {
+    if (section === 'profile') await loadProfile();
+    else if (section === 'skills') await loadSkills();
+    else if (section === 'projects') await loadProjects();
+    else if (section === 'experience') await loadExperience();
+    else if (section === 'certifications') await loadCertifications();
+    else if (section === 'repositories') await loadRepositories();
+    else if (section === 'reports') await loadReports();
+    else if (section === 'contacts') await loadContacts();
+}
+
+// ==================== PROFILE CRUD ====================
+async function loadProfile() {
+    try {
+        const res = await fetchWithAuth('/profile');
+        const profile = await res.json();
+        document.getElementById('profileName').value = profile.name || '';
+        document.getElementById('profileTitle').value = profile.title || '';
+        document.getElementById('profileBio').value = profile.bio || '';
+        document.getElementById('profileLocation').value = profile.location || '';
+        document.getElementById('profileEmail').value = profile.email || '';
+        document.getElementById('profilePhone').value = profile.phone || '';
+        document.getElementById('profileGithub').value = profile.github || '';
+        document.getElementById('profileLinkedin').value = profile.linkedin || '';
+        document.getElementById('profileInstagram').value = profile.instagram || '';
+        
+        const photoDiv = document.getElementById('currentPhoto');
+        if (profile.profileImage && profile.profileImage !== '') {
+            photoDiv.innerHTML = `<img src="${profile.profileImage}" class="w-full h-full rounded-full object-cover">`;
+        } else {
+            photoDiv.innerHTML = '<span class="text-xs text-center">No Photo</span>';
+        }
+    } catch (error) {
+        console.error('Load profile error:', error);
+    }
+}
+
+document.getElementById('profileForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+        name: document.getElementById('profileName').value,
+        title: document.getElementById('profileTitle').value,
+        bio: document.getElementById('profileBio').value,
+        location: document.getElementById('profileLocation').value,
+        email: document.getElementById('profileEmail').value,
+        phone: document.getElementById('profilePhone').value,
+        github: document.getElementById('profileGithub').value,
+        linkedin: document.getElementById('profileLinkedin').value,
+        instagram: document.getElementById('profileInstagram').value
+    };
+    const res = await fetchWithAuth('/profile', { method: 'PUT', body: JSON.stringify(data) });
+    if (res.ok) {
+        const msg = document.getElementById('profileMessage');
+        msg.textContent = '✅ Profile updated successfully!';
+        msg.classList.remove('hidden');
+        setTimeout(() => msg.classList.add('hidden'), 3000);
+        loadProfile();
+        showToast('Profile updated!', 'success');
+    }
+});
+
+document.getElementById('uploadPhotoBtn')?.addEventListener('click', async () => {
+    const fileInput = document.getElementById('profilePhoto');
+    if (!fileInput.files.length) {
+        showToast('Select a file first', 'error');
+        return;
+    }
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+        const base64String = reader.result;
+        try {
+            const res = await fetch(`${API_URL}/upload/profile-base64`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ imageBase64: base64String })
+            });
+            if (res.ok) {
+                showToast('Photo uploaded successfully!', 'success');
+                loadProfile();
+                fileInput.value = '';
+            } else {
+                const err = await res.json();
+                showToast('Upload failed: ' + (err.message || 'Unknown error'), 'error');
+            }
+        } catch (err) {
+            showToast('Upload failed: ' + err.message, 'error');
+        }
+    };
+    reader.readAsDataURL(file);
+});
+
+// ==================== SKILLS CRUD ====================
+async function loadSkills() {
+    const res = await fetchWithAuth('/skills');
+    const skills = await res.json();
+    const container = document.getElementById('skillsList');
+    if (skills.length === 0) {
+        container.innerHTML = '<div class="text-center text-gray-500 py-8">No skills added yet. Add your first skill above!</div>';
+        return;
+    }
+    container.innerHTML = skills.map(skill => `
+        <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
+            <div><span class="font-bold text-green-400">${escapeHtml(skill.name)}</span><span class="ml-3 text-green-500">${skill.percentage}%</span><span class="ml-2 text-xs text-gray-500">${skill.category || 'Technical'}</span></div>
+            <div class="flex gap-3"><button onclick="editSkill('${skill._id}', '${escapeHtml(skill.name)}', ${skill.percentage})" class="text-blue-400">✏️ Edit</button><button onclick="deleteSkill('${skill._id}')" class="text-red-400">🗑️ Delete</button></div>
+        </div>
+    `).join('');
+}
+
+window.editSkill = (id, name, percent) => {
+    const newName = prompt('Enter new skill name:', name);
+    if (newName && newName.trim()) {
+        const newPercent = prompt('Enter new percentage (0-100):', percent);
+        if (newPercent && !isNaN(newPercent)) {
+            fetchWithAuth(`/skills/${id}`, { method: 'PUT', body: JSON.stringify({ name: newName, percentage: parseInt(newPercent) }) }).then(() => { loadSkills(); showToast('Skill updated!', 'success'); });
+        }
+    }
+};
+
+window.deleteSkill = async (id) => {
+    if (confirm('Delete this skill permanently?')) {
+        await fetchWithAuth(`/skills/${id}`, { method: 'DELETE' });
+        loadSkills();
+        showToast('Skill deleted!', 'success');
+    }
+};
+
+document.getElementById('skillForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = { name: document.getElementById('skillName').value, percentage: parseInt(document.getElementById('skillPercent').value), category: document.getElementById('skillCategory').value };
+    await fetchWithAuth('/skills', { method: 'POST', body: JSON.stringify(data) });
+    loadSkills();
+    e.target.reset();
+    showToast('Skill added!', 'success');
+});
+
+// ==================== PROJECTS CRUD ====================
+async function loadProjects() {
+    const res = await fetchWithAuth('/projects');
+    const projects = await res.json();
+    const container = document.getElementById('projectsList');
+    if (projects.length === 0) {
+        container.innerHTML = '<div class="text-center text-gray-500 py-8 col-span-2">No projects yet. Add your first project above!</div>';
+        return;
+    }
+    container.innerHTML = projects.map(proj => `
+        <div class="bg-black/50 border border-green-500/30 rounded-lg p-4">
+            <h3 class="text-xl font-bold text-green-400">${escapeHtml(proj.title)}</h3>
+            <p class="text-gray-400 text-sm mt-1">${escapeHtml(proj.description || '')}</p>
+            <div class="flex flex-wrap gap-2 mt-2">${proj.technologies ? proj.technologies.map(t => `<span class="text-xs px-2 py-0.5 bg-green-500/20 rounded">${escapeHtml(t)}</span>`).join('') : ''}</div>
+            <div class="flex gap-3 mt-3 text-sm">${proj.demoLink ? `<a href="${proj.demoLink}" target="_blank" class="text-green-400">🔗 Demo</a>` : ''}${proj.githubLink ? `<a href="${proj.githubLink}" target="_blank" class="text-green-400">📦 GitHub</a>` : ''}${proj.status ? `<span class="text-gray-500">📌 ${escapeHtml(proj.status)}</span>` : ''}</div>
+            <div class="flex gap-3 mt-3 pt-3 border-t border-green-500/20"><button onclick="editProject('${proj._id}')" class="text-blue-400 text-sm">✏️ Edit</button><button onclick="deleteProject('${proj._id}')" class="text-red-400 text-sm">🗑️ Delete</button></div>
+        </div>
+    `).join('');
+}
+
+window.editProject = async (id) => {
+    const res = await fetchWithAuth(`/projects/${id}`);
+    const proj = await res.json();
+    const newTitle = prompt('New title:', proj.title);
+    if (newTitle) {
+        const newDesc = prompt('New description:', proj.description);
+        await fetchWithAuth(`/projects/${id}`, { method: 'PUT', body: JSON.stringify({ ...proj, title: newTitle, description: newDesc }) });
+        loadProjects();
+        showToast('Project updated!', 'success');
+    }
+};
+
+window.deleteProject = async (id) => {
+    if (confirm('Delete this project permanently?')) {
+        await fetchWithAuth(`/projects/${id}`, { method: 'DELETE' });
+        loadProjects();
+        showToast('Project deleted!', 'success');
+    }
+};
+
+document.getElementById('projectForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const tech = document.getElementById('projectTech').value.split(',').map(s => s.trim()).filter(Boolean);
+    const data = { title: document.getElementById('projectTitle').value, description: document.getElementById('projectDesc').value, technologies: tech, demoLink: document.getElementById('projectDemo').value, githubLink: document.getElementById('projectGithub').value, status: document.getElementById('projectStatus').value };
+    await fetchWithAuth('/projects', { method: 'POST', body: JSON.stringify(data) });
+    loadProjects();
+    e.target.reset();
+    showToast('Project added!', 'success');
+});
+
+// ==================== EXPERIENCE CRUD ====================
+async function loadExperience() {
+    const res = await fetchWithAuth('/experiences');
+    const experiences = await res.json();
+    const container = document.getElementById('experienceList');
+    if (experiences.length === 0) {
+        container.innerHTML = '<div class="text-center text-gray-500 py-8">No experience entries. Add your work history above!</div>';
+        return;
+    }
+    container.innerHTML = experiences.map(exp => `
+        <div class="bg-black/50 border border-green-500/30 rounded-lg p-4">
+            <div class="flex justify-between items-start flex-wrap gap-2">
+                <div class="flex-1"><h3 class="text-xl font-bold text-green-400">${escapeHtml(exp.role)} @ ${escapeHtml(exp.company)}</h3><p class="text-gray-400 text-sm">${exp.startDate} - ${exp.isCurrent ? 'Present' : (exp.endDate || 'N/A')}</p><ul class="list-disc list-inside mt-2 text-sm text-gray-300">${exp.responsibilities ? exp.responsibilities.map(r => `<li>${escapeHtml(r)}</li>`).join('') : '<li>No responsibilities listed</li>'}</ul></div>
+                <div class="flex gap-2"><button onclick="editExperience('${exp._id}')" class="text-blue-400">✏️ Edit</button><button onclick="deleteExperience('${exp._id}')" class="text-red-400">🗑️ Delete</button></div>
+            </div>
+        </div>
+    `).join('');
+}
+
+window.editExperience = async (id) => {
+    const res = await fetchWithAuth(`/experiences/${id}`);
+    const exp = await res.json();
+    const newRole = prompt('New role:', exp.role);
+    if (newRole) {
+        const newCompany = prompt('New company:', exp.company);
+        await fetchWithAuth(`/experiences/${id}`, { method: 'PUT', body: JSON.stringify({ ...exp, role: newRole, company: newCompany }) });
+        loadExperience();
+        showToast('Experience updated!', 'success');
+    }
+};
+
+window.deleteExperience = async (id) => {
+    if (confirm('Delete this experience entry?')) {
+        await fetchWithAuth(`/experiences/${id}`, { method: 'DELETE' });
+        loadExperience();
+        showToast('Experience deleted!', 'success');
+    }
+};
+
+document.getElementById('experienceForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const responsibilities = document.getElementById('expResponsibilities').value.split('\n').filter(r => r.trim());
+    const data = { company: document.getElementById('expCompany').value, role: document.getElementById('expRole').value, startDate: document.getElementById('expStartDate').value, endDate: document.getElementById('expEndDate').value || undefined, isCurrent: document.getElementById('expCurrent').checked, responsibilities };
+    await fetchWithAuth('/experiences', { method: 'POST', body: JSON.stringify(data) });
+    loadExperience();
+    e.target.reset();
+    showToast('Experience added!', 'success');
+});
+
+// ==================== CERTIFICATIONS CRUD ====================
+async function loadCertifications() {
+    const res = await fetchWithAuth('/certifications');
+    const certs = await res.json();
+    const container = document.getElementById('certificationsList');
+    if (certs.length === 0) {
+        container.innerHTML = '<div class="text-center text-gray-500 py-8">No certifications added yet.</div>';
+        return;
+    }
+    container.innerHTML = certs.map(c => `
+        <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
+            <div><span class="font-bold text-green-400">${escapeHtml(c.title)}</span><span class="ml-2 text-sm text-gray-400">– ${escapeHtml(c.issuer)} (${c.date})</span>${c.credentialId ? `<br><span class="text-xs text-gray-500">ID: ${escapeHtml(c.credentialId)}</span>` : ''}</div>
+            <div class="flex gap-2"><button onclick="editCert('${c._id}')" class="text-blue-400">✏️ Edit</button><button onclick="deleteCert('${c._id}')" class="text-red-400">🗑️ Delete</button></div>
+        </div>
+    `).join('');
+}
+
+window.editCert = async (id) => {
+    const res = await fetchWithAuth(`/certifications/${id}`);
+    const cert = await res.json();
+    const newTitle = prompt('New title:', cert.title);
+    if (newTitle) {
+        await fetchWithAuth(`/certifications/${id}`, { method: 'PUT', body: JSON.stringify({ ...cert, title: newTitle }) });
+        loadCertifications();
+        showToast('Certification updated!', 'success');
+    }
+};
+
+window.deleteCert = async (id) => {
+    if (confirm('Delete this certification?')) {
+        await fetchWithAuth(`/certifications/${id}`, { method: 'DELETE' });
+        loadCertifications();
+        showToast('Certification deleted!', 'success');
+    }
+};
+
+document.getElementById('certForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = { title: document.getElementById('certTitle').value, issuer: document.getElementById('certIssuer').value, date: document.getElementById('certDate').value, credentialId: document.getElementById('certId').value, verifyUrl: document.getElementById('certUrl').value };
+    await fetchWithAuth('/certifications', { method: 'POST', body: JSON.stringify(data) });
+    loadCertifications();
+    e.target.reset();
+    showToast('Certification added!', 'success');
+});
+
+// ==================== REPOSITORIES CRUD ====================
+async function loadRepositories() {
+    const res = await fetchWithAuth('/repositories');
+    const repos = await res.json();
+    const container = document.getElementById('repositoriesList');
+    if (repos.length === 0) {
+        container.innerHTML = '<div class="text-center text-gray-500 py-8">No repositories added yet.</div>';
+        return;
+    }
+    container.innerHTML = repos.map(r => `
+        <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
+            <div><span class="font-bold text-green-400">${escapeHtml
