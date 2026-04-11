@@ -53,8 +53,12 @@ async function loadProfile() {
     document.getElementById('profileLinkedin').value = profile.linkedin || '';
     document.getElementById('profileInstagram').value = profile.instagram || '';
     const photoDiv = document.getElementById('currentPhoto');
-    if (profile.profileImage) photoDiv.innerHTML = `<img src="${profile.profileImage}" class="w-16 h-16 rounded-full border border-green-500">`;
-    else photoDiv.innerHTML = 'No photo uploaded';
+    if (profile.profileImage) {
+        // If it's already a data URL or external URL, just display it
+        photoDiv.innerHTML = `<img src="${profile.profileImage}" class="w-16 h-16 rounded-full border border-green-500">`;
+    } else {
+        photoDiv.innerHTML = 'No photo uploaded';
+    }
 }
 document.getElementById('profileForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -78,20 +82,36 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
         loadProfile();
     }
 });
+
+// ✅ UPDATED: Base64 photo upload (no Cloudinary)
 document.getElementById('uploadPhotoBtn')?.addEventListener('click', async () => {
     const fileInput = document.getElementById('profilePhoto');
     if (!fileInput.files.length) return alert('Select a file first');
-    const formData = new FormData();
-    formData.append('image', fileInput.files[0]);
-    const res = await fetch(`${API_URL}/upload/profile-image`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formData
-    });
-    if (res.ok) {
-        alert('Photo uploaded');
-        loadProfile();
-    } else alert('Upload failed');
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+        const base64String = reader.result; // includes data:image/...
+        try {
+            const res = await fetch(`${API_URL}/upload/profile-base64`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ imageBase64: base64String })
+            });
+            if (res.ok) {
+                alert('Photo uploaded successfully!');
+                loadProfile(); // refresh profile section to show new photo
+            } else {
+                const err = await res.json();
+                alert('Upload failed: ' + (err.message || 'Unknown error'));
+            }
+        } catch (err) {
+            alert('Upload failed: ' + err.message);
+        }
+    };
+    reader.readAsDataURL(file);
 });
 
 // ------------------- SKILLS -------------------

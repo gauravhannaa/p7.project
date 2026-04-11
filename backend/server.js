@@ -25,9 +25,6 @@ import Profile from './models/Profile.js';
 import Certification from './models/Certification.js';
 import Repository from './models/Repository.js';
 
-// Upload controller (with fallback if Cloudinary not configured)
-import { upload, uploadProfileImage } from './controllers/uploadController.js';
-
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -210,13 +207,30 @@ setTimeout(() => {
 
 // ---------------------- MIDDLEWARE ----------------------
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Increase limit for Base64 images
 
 // Static files for uploads (create folder if missing)
 const uploadsPath = path.join(__dirname, 'uploads');
 import fs from 'fs';
 if (!fs.existsSync(uploadsPath)) fs.mkdirSync(uploadsPath, { recursive: true });
 app.use('/uploads', express.static(uploadsPath));
+
+// ---------------------- BASE64 PROFILE PHOTO UPLOAD (No Cloudinary) ----------------------
+app.post('/api/upload/profile-base64', async (req, res) => {
+  try {
+    const { imageBase64 } = req.body;
+    if (!imageBase64) return res.status(400).json({ message: 'No image data' });
+
+    let profile = await Profile.findOne();
+    if (!profile) profile = new Profile();
+    profile.profileImage = imageBase64; // store full base64 string (data:image/...)
+    await profile.save();
+    res.json({ imageUrl: imageBase64, message: 'Photo uploaded successfully' });
+  } catch (err) {
+    console.error('Base64 upload error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // ---------------------- API ROUTES ----------------------
 app.use('/api/auth', authRoutes);
@@ -228,14 +242,6 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/certifications', certificationRoutes);
 app.use('/api/repositories', repositoryRoutes);
-
-// Profile photo upload (only if Cloudinary is configured, else ignore)
-if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY) {
-  app.post('/api/upload/profile-image', upload.single('image'), uploadProfileImage);
-  console.log('✅ Cloudinary upload route enabled');
-} else {
-  console.log('⚠️ Cloudinary not configured – upload route disabled');
-}
 
 // Serve admin dashboard static files (ensure the folder exists)
 const adminDashboardPath = path.join(__dirname, '../admin-dashboard');
