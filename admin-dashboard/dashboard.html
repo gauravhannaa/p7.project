@@ -39,6 +39,7 @@
             padding: 8px 12px;
             border-radius: 6px;
             outline: none;
+            width: 100%;
         }
         input:focus, textarea:focus, select:focus {
             border-color: #00ff41;
@@ -52,41 +53,25 @@
             background: rgba(0, 255, 65, 0.2);
             border: 1px solid rgba(0, 255, 65, 0.5);
         }
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1a1a1a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #00ff41;
-            border-radius: 4px;
-        }
         .toast {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 1000;
             animation: slideIn 0.3s ease;
+            padding: 12px 20px;
+            border-radius: 8px;
         }
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
+        button {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-
-<!-- Scanline Effect -->
-<div class="fixed inset-0 pointer-events-none z-50 bg-gradient-to-b from-transparent via-green-500/5 to-transparent bg-[length:100%_4px] animate-[scan_8s_linear_infinite]" style="animation: scan 8s linear infinite;"></div>
-
-<style>
-    @keyframes scan {
-        0% { transform: translateY(-100%); }
-        100% { transform: translateY(100%); }
-    }
-</style>
 
 <div class="container mx-auto p-6 max-w-7xl relative z-10">
     <!-- Header -->
@@ -112,17 +97,17 @@
 
     <!-- Navigation Tabs -->
     <div class="flex flex-wrap gap-2 mb-6">
-        <button onclick="showSection('profile')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="profile">👤 Profile</button>
-        <button onclick="showSection('skills')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="skills">⚡ Skills</button>
-        <button onclick="showSection('projects')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="projects">📁 Projects</button>
-        <button onclick="showSection('experience')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="experience">💼 Experience</button>
-        <button onclick="showSection('certifications')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="certifications">🎓 Certifications</button>
-        <button onclick="showSection('repositories')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="repositories">📚 Repositories</button>
-        <button onclick="showSection('reports')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="reports">📄 Reports</button>
-        <button onclick="showSection('contacts')" class="nav-btn px-4 py-2 rounded btn-neon" data-section="contacts">✉️ Contacts</button>
+        <button onclick="showSection('profile')" class="nav-btn px-4 py-2 rounded btn-neon">👤 Profile</button>
+        <button onclick="showSection('skills')" class="nav-btn px-4 py-2 rounded btn-neon">⚡ Skills</button>
+        <button onclick="showSection('projects')" class="nav-btn px-4 py-2 rounded btn-neon">📁 Projects</button>
+        <button onclick="showSection('experience')" class="nav-btn px-4 py-2 rounded btn-neon">💼 Experience</button>
+        <button onclick="showSection('certifications')" class="nav-btn px-4 py-2 rounded btn-neon">🎓 Certifications</button>
+        <button onclick="showSection('repositories')" class="nav-btn px-4 py-2 rounded btn-neon">📚 Repositories</button>
+        <button onclick="showSection('reports')" class="nav-btn px-4 py-2 rounded btn-neon">📄 Reports</button>
+        <button onclick="showSection('contacts')" class="nav-btn px-4 py-2 rounded btn-neon">✉️ Contacts</button>
     </div>
 
-    <!-- ================= PROFILE SECTION ================= -->
+    <!-- PROFILE SECTION -->
     <div id="profileSection" class="section glass-panel p-6 hidden">
         <h2 class="text-2xl font-bold mb-4">👤 Profile Configuration</h2>
         <div id="profileMessage" class="hidden bg-green-500/20 border border-green-500 rounded p-2 mb-4 text-center"></div>
@@ -150,7 +135,7 @@
         </form>
     </div>
 
-    <!-- ================= SKILLS SECTION ================= -->
+    <!-- SKILLS SECTION -->
     <div id="skillsSection" class="section glass-panel p-6 hidden">
         <h2 class="text-2xl font-bold mb-4">⚡ Skills Management</h2>
         <form id="skillForm" class="mb-6 p-4 border border-green-500/30 rounded">
@@ -172,7 +157,7 @@
         <div id="skillsList" class="space-y-3"></div>
     </div>
 
-    <!-- ================= PROJECTS SECTION ================= -->
+    <!-- PROJECTS SECTION -->
     <div id="projectsSection" class="section glass-panel p-6 hidden">
         <h2 class="text-2xl font-bold mb-4">📁 Projects Management</h2>
         <form id="projectForm" class="mb-6 p-4 border border-green-500/30 rounded">
@@ -190,7 +175,7 @@
         <div id="projectsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
     </div>
 
-    <!-- ================= EXPERIENCE SECTION ================= -->
+    <!-- EXPERIENCE SECTION -->
     <div id="experienceSection" class="section glass-panel p-6 hidden">
         <h2 class="text-2xl font-bold mb-4">💼 Experience Management</h2>
         <form id="experienceForm" class="mb-6 p-4 border border-green-500/30 rounded">
@@ -208,7 +193,7 @@
         <div id="experienceList" class="space-y-4"></div>
     </div>
 
-    <!-- ================= CERTIFICATIONS SECTION ================= -->
+    <!-- CERTIFICATIONS SECTION -->
     <div id="certificationsSection" class="section glass-panel p-6 hidden">
         <h2 class="text-2xl font-bold mb-4">🎓 Certifications Management</h2>
         <form id="certForm" class="mb-6 p-4 border border-green-500/30 rounded">
@@ -225,7 +210,7 @@
         <div id="certificationsList" class="space-y-3"></div>
     </div>
 
-    <!-- ================= REPOSITORIES SECTION ================= -->
+    <!-- REPOSITORIES SECTION -->
     <div id="repositoriesSection" class="section glass-panel p-6 hidden">
         <h2 class="text-2xl font-bold mb-4">📚 Repositories Management</h2>
         <form id="repoForm" class="mb-6 p-4 border border-green-500/30 rounded">
@@ -244,7 +229,7 @@
         <div id="repositoriesList" class="space-y-3"></div>
     </div>
 
-    <!-- ================= REPORTS SECTION ================= -->
+    <!-- REPORTS SECTION -->
     <div id="reportsSection" class="section glass-panel p-6 hidden">
         <h2 class="text-2xl font-bold mb-4">📄 Reports/Certificates Management</h2>
         <form id="reportForm" class="mb-6 p-4 border border-green-500/30 rounded">
@@ -259,7 +244,7 @@
         <div id="reportsList" class="space-y-3"></div>
     </div>
 
-    <!-- ================= CONTACTS SECTION ================= -->
+    <!-- CONTACTS SECTION -->
     <div id="contactsSection" class="section glass-panel p-6 hidden">
         <h2 class="text-2xl font-bold mb-4">✉️ Contact Messages</h2>
         <div id="contactsList" class="space-y-4"></div>
@@ -271,8 +256,12 @@
 const API_URL = 'https://p7-project-1.onrender.com/api';
 let token = localStorage.getItem('adminToken');
 
+console.log('Dashboard Loaded');
+console.log('Token exists:', !!token);
+
 // Redirect if no token
 if (!token) {
+    alert('No token found! Please login first.');
     window.location.href = 'admin-login.html';
 }
 
@@ -286,6 +275,7 @@ async function fetchWithAuth(url, options = {}) {
     const response = await fetch(`${API_URL}${url}`, { ...options, headers });
     if (response.status === 401) {
         localStorage.removeItem('adminToken');
+        alert('Session expired. Please login again.');
         window.location.href = 'admin-login.html';
     }
     return response;
@@ -294,7 +284,7 @@ async function fetchWithAuth(url, options = {}) {
 // ==================== TOAST NOTIFICATION ====================
 function showToast(message, type = 'success') {
     const toast = document.createElement('div');
-    toast.className = `toast px-6 py-3 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-500 text-black' : 'bg-red-500 text-white'}`;
+    toast.className = `toast ${type === 'success' ? 'bg-green-500 text-black' : 'bg-red-500 text-white'}`;
     toast.innerHTML = `<div class="flex items-center gap-3"><span>${type === 'success' ? '✅' : '❌'}</span><span>${message}</span></div>`;
     document.body.appendChild(toast);
     setTimeout(() => {
@@ -305,39 +295,41 @@ function showToast(message, type = 'success') {
 
 // ==================== SECTION MANAGEMENT ====================
 function showSection(section) {
+    console.log('Showing section:', section);
     document.querySelectorAll('.section').forEach(el => el.classList.add('hidden'));
-    document.getElementById(`${section}Section`).classList.remove('hidden');
-    
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('bg-green-500/20', 'border-green-500');
-        btn.classList.add('border-green-500/50');
-    });
-    const activeBtn = document.querySelector(`[data-section="${section}"]`);
-    if (activeBtn) {
-        activeBtn.classList.add('bg-green-500/20', 'border-green-500');
-        activeBtn.classList.remove('border-green-500/50');
+    const targetSection = document.getElementById(`${section}Section`);
+    if (targetSection) {
+        targetSection.classList.remove('hidden');
+    } else {
+        console.error('Section not found:', section);
     }
     
-    loadSectionData(section);
+    // Load data for this section
+    if (section === 'profile') loadProfile();
+    else if (section === 'skills') loadSkills();
+    else if (section === 'projects') loadProjects();
+    else if (section === 'experience') loadExperience();
+    else if (section === 'certifications') loadCertifications();
+    else if (section === 'repositories') loadRepositories();
+    else if (section === 'reports') loadReports();
+    else if (section === 'contacts') loadContacts();
 }
 
 function refreshCurrentSection() {
     const visibleSection = document.querySelector('.section:not(.hidden)');
     if (visibleSection && visibleSection.id) {
         const sectionName = visibleSection.id.replace('Section', '');
-        loadSectionData(sectionName);
+        console.log('Refreshing section:', sectionName);
+        if (sectionName === 'profile') loadProfile();
+        else if (sectionName === 'skills') loadSkills();
+        else if (sectionName === 'projects') loadProjects();
+        else if (sectionName === 'experience') loadExperience();
+        else if (sectionName === 'certifications') loadCertifications();
+        else if (sectionName === 'repositories') loadRepositories();
+        else if (sectionName === 'reports') loadReports();
+        else if (sectionName === 'contacts') loadContacts();
+        showToast('Refreshed!', 'success');
     }
-}
-
-async function loadSectionData(section) {
-    if (section === 'profile') await loadProfile();
-    else if (section === 'skills') await loadSkills();
-    else if (section === 'projects') await loadProjects();
-    else if (section === 'experience') await loadExperience();
-    else if (section === 'certifications') await loadCertifications();
-    else if (section === 'repositories') await loadRepositories();
-    else if (section === 'reports') await loadReports();
-    else if (section === 'contacts') await loadContacts();
 }
 
 // ==================== PROFILE CRUD ====================
@@ -363,6 +355,7 @@ async function loadProfile() {
         }
     } catch (error) {
         console.error('Load profile error:', error);
+        showToast('Error loading profile', 'error');
     }
 }
 
@@ -381,12 +374,10 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
     };
     const res = await fetchWithAuth('/profile', { method: 'PUT', body: JSON.stringify(data) });
     if (res.ok) {
-        const msg = document.getElementById('profileMessage');
-        msg.textContent = '✅ Profile updated successfully!';
-        msg.classList.remove('hidden');
-        setTimeout(() => msg.classList.add('hidden'), 3000);
-        loadProfile();
         showToast('Profile updated!', 'success');
+        loadProfile();
+    } else {
+        showToast('Update failed', 'error');
     }
 });
 
@@ -410,12 +401,11 @@ document.getElementById('uploadPhotoBtn')?.addEventListener('click', async () =>
                 body: JSON.stringify({ imageBase64: base64String })
             });
             if (res.ok) {
-                showToast('Photo uploaded successfully!', 'success');
+                showToast('Photo uploaded!', 'success');
                 loadProfile();
                 fileInput.value = '';
             } else {
-                const err = await res.json();
-                showToast('Upload failed: ' + (err.message || 'Unknown error'), 'error');
+                showToast('Upload failed', 'error');
             }
         } catch (err) {
             showToast('Upload failed: ' + err.message, 'error');
@@ -426,19 +416,24 @@ document.getElementById('uploadPhotoBtn')?.addEventListener('click', async () =>
 
 // ==================== SKILLS CRUD ====================
 async function loadSkills() {
-    const res = await fetchWithAuth('/skills');
-    const skills = await res.json();
-    const container = document.getElementById('skillsList');
-    if (skills.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500 py-8">No skills added yet. Add your first skill above!</div>';
-        return;
+    try {
+        const res = await fetchWithAuth('/skills');
+        const skills = await res.json();
+        const container = document.getElementById('skillsList');
+        if (skills.length === 0) {
+            container.innerHTML = '<div class="text-center text-gray-500 py-8">No skills added yet. Add your first skill above!</div>';
+            return;
+        }
+        container.innerHTML = skills.map(skill => `
+            <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
+                <div><span class="font-bold text-green-400">${escapeHtml(skill.name)}</span><span class="ml-3 text-green-500">${skill.percentage}%</span></div>
+                <div class="flex gap-3"><button onclick="editSkill('${skill._id}', '${escapeHtml(skill.name)}', ${skill.percentage})" class="text-blue-400">✏️ Edit</button><button onclick="deleteSkill('${skill._id}')" class="text-red-400">🗑️ Delete</button></div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Load skills error:', error);
+        showToast('Error loading skills', 'error');
     }
-    container.innerHTML = skills.map(skill => `
-        <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
-            <div><span class="font-bold text-green-400">${escapeHtml(skill.name)}</span><span class="ml-3 text-green-500">${skill.percentage}%</span><span class="ml-2 text-xs text-gray-500">${skill.category || 'Technical'}</span></div>
-            <div class="flex gap-3"><button onclick="editSkill('${skill._id}', '${escapeHtml(skill.name)}', ${skill.percentage})" class="text-blue-400">✏️ Edit</button><button onclick="deleteSkill('${skill._id}')" class="text-red-400">🗑️ Delete</button></div>
-        </div>
-    `).join('');
 }
 
 window.editSkill = (id, name, percent) => {
@@ -446,7 +441,8 @@ window.editSkill = (id, name, percent) => {
     if (newName && newName.trim()) {
         const newPercent = prompt('Enter new percentage (0-100):', percent);
         if (newPercent && !isNaN(newPercent)) {
-            fetchWithAuth(`/skills/${id}`, { method: 'PUT', body: JSON.stringify({ name: newName, percentage: parseInt(newPercent) }) }).then(() => { loadSkills(); showToast('Skill updated!', 'success'); });
+            fetchWithAuth(`/skills/${id}`, { method: 'PUT', body: JSON.stringify({ name: newName, percentage: parseInt(newPercent) }) })
+                .then(() => { loadSkills(); showToast('Skill updated!', 'success'); });
         }
     }
 };
@@ -461,7 +457,11 @@ window.deleteSkill = async (id) => {
 
 document.getElementById('skillForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const data = { name: document.getElementById('skillName').value, percentage: parseInt(document.getElementById('skillPercent').value), category: document.getElementById('skillCategory').value };
+    const data = { 
+        name: document.getElementById('skillName').value, 
+        percentage: parseInt(document.getElementById('skillPercent').value),
+        category: document.getElementById('skillCategory').value
+    };
     await fetchWithAuth('/skills', { method: 'POST', body: JSON.stringify(data) });
     loadSkills();
     e.target.reset();
@@ -470,22 +470,24 @@ document.getElementById('skillForm')?.addEventListener('submit', async (e) => {
 
 // ==================== PROJECTS CRUD ====================
 async function loadProjects() {
-    const res = await fetchWithAuth('/projects');
-    const projects = await res.json();
-    const container = document.getElementById('projectsList');
-    if (projects.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500 py-8 col-span-2">No projects yet. Add your first project above!</div>';
-        return;
+    try {
+        const res = await fetchWithAuth('/projects');
+        const projects = await res.json();
+        const container = document.getElementById('projectsList');
+        if (projects.length === 0) {
+            container.innerHTML = '<div class="text-center text-gray-500 py-8 col-span-2">No projects yet. Add your first project above!</div>';
+            return;
+        }
+        container.innerHTML = projects.map(proj => `
+            <div class="bg-black/50 border border-green-500/30 rounded-lg p-4">
+                <h3 class="text-xl font-bold text-green-400">${escapeHtml(proj.title)}</h3>
+                <p class="text-gray-400 text-sm mt-1">${escapeHtml(proj.description || '')}</p>
+                <div class="flex gap-3 mt-3 pt-3 border-t border-green-500/20"><button onclick="editProject('${proj._id}')" class="text-blue-400 text-sm">✏️ Edit</button><button onclick="deleteProject('${proj._id}')" class="text-red-400 text-sm">🗑️ Delete</button></div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Load projects error:', error);
     }
-    container.innerHTML = projects.map(proj => `
-        <div class="bg-black/50 border border-green-500/30 rounded-lg p-4">
-            <h3 class="text-xl font-bold text-green-400">${escapeHtml(proj.title)}</h3>
-            <p class="text-gray-400 text-sm mt-1">${escapeHtml(proj.description || '')}</p>
-            <div class="flex flex-wrap gap-2 mt-2">${proj.technologies ? proj.technologies.map(t => `<span class="text-xs px-2 py-0.5 bg-green-500/20 rounded">${escapeHtml(t)}</span>`).join('') : ''}</div>
-            <div class="flex gap-3 mt-3 text-sm">${proj.demoLink ? `<a href="${proj.demoLink}" target="_blank" class="text-green-400">🔗 Demo</a>` : ''}${proj.githubLink ? `<a href="${proj.githubLink}" target="_blank" class="text-green-400">📦 GitHub</a>` : ''}${proj.status ? `<span class="text-gray-500">📌 ${escapeHtml(proj.status)}</span>` : ''}</div>
-            <div class="flex gap-3 mt-3 pt-3 border-t border-green-500/20"><button onclick="editProject('${proj._id}')" class="text-blue-400 text-sm">✏️ Edit</button><button onclick="deleteProject('${proj._id}')" class="text-red-400 text-sm">🗑️ Delete</button></div>
-        </div>
-    `).join('');
 }
 
 window.editProject = async (id) => {
@@ -493,8 +495,7 @@ window.editProject = async (id) => {
     const proj = await res.json();
     const newTitle = prompt('New title:', proj.title);
     if (newTitle) {
-        const newDesc = prompt('New description:', proj.description);
-        await fetchWithAuth(`/projects/${id}`, { method: 'PUT', body: JSON.stringify({ ...proj, title: newTitle, description: newDesc }) });
+        await fetchWithAuth(`/projects/${id}`, { method: 'PUT', body: JSON.stringify({ ...proj, title: newTitle }) });
         loadProjects();
         showToast('Project updated!', 'success');
     }
@@ -520,21 +521,25 @@ document.getElementById('projectForm')?.addEventListener('submit', async (e) => 
 
 // ==================== EXPERIENCE CRUD ====================
 async function loadExperience() {
-    const res = await fetchWithAuth('/experiences');
-    const experiences = await res.json();
-    const container = document.getElementById('experienceList');
-    if (experiences.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500 py-8">No experience entries. Add your work history above!</div>';
-        return;
-    }
-    container.innerHTML = experiences.map(exp => `
-        <div class="bg-black/50 border border-green-500/30 rounded-lg p-4">
-            <div class="flex justify-between items-start flex-wrap gap-2">
-                <div class="flex-1"><h3 class="text-xl font-bold text-green-400">${escapeHtml(exp.role)} @ ${escapeHtml(exp.company)}</h3><p class="text-gray-400 text-sm">${exp.startDate} - ${exp.isCurrent ? 'Present' : (exp.endDate || 'N/A')}</p><ul class="list-disc list-inside mt-2 text-sm text-gray-300">${exp.responsibilities ? exp.responsibilities.map(r => `<li>${escapeHtml(r)}</li>`).join('') : '<li>No responsibilities listed</li>'}</ul></div>
-                <div class="flex gap-2"><button onclick="editExperience('${exp._id}')" class="text-blue-400">✏️ Edit</button><button onclick="deleteExperience('${exp._id}')" class="text-red-400">🗑️ Delete</button></div>
+    try {
+        const res = await fetchWithAuth('/experiences');
+        const experiences = await res.json();
+        const container = document.getElementById('experienceList');
+        if (experiences.length === 0) {
+            container.innerHTML = '<div class="text-center text-gray-500 py-8">No experience entries. Add your work history above!</div>';
+            return;
+        }
+        container.innerHTML = experiences.map(exp => `
+            <div class="bg-black/50 border border-green-500/30 rounded-lg p-4">
+                <div class="flex justify-between items-start flex-wrap gap-2">
+                    <div><h3 class="text-xl font-bold text-green-400">${escapeHtml(exp.role)} @ ${escapeHtml(exp.company)}</h3><p class="text-gray-400 text-sm">${exp.startDate} - ${exp.isCurrent ? 'Present' : (exp.endDate || 'N/A')}</p></div>
+                    <div class="flex gap-2"><button onclick="editExperience('${exp._id}')" class="text-blue-400">✏️ Edit</button><button onclick="deleteExperience('${exp._id}')" class="text-red-400">🗑️ Delete</button></div>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
+    } catch (error) {
+        console.error('Load experience error:', error);
+    }
 }
 
 window.editExperience = async (id) => {
@@ -542,8 +547,7 @@ window.editExperience = async (id) => {
     const exp = await res.json();
     const newRole = prompt('New role:', exp.role);
     if (newRole) {
-        const newCompany = prompt('New company:', exp.company);
-        await fetchWithAuth(`/experiences/${id}`, { method: 'PUT', body: JSON.stringify({ ...exp, role: newRole, company: newCompany }) });
+        await fetchWithAuth(`/experiences/${id}`, { method: 'PUT', body: JSON.stringify({ ...exp, role: newRole }) });
         loadExperience();
         showToast('Experience updated!', 'success');
     }
@@ -569,19 +573,23 @@ document.getElementById('experienceForm')?.addEventListener('submit', async (e) 
 
 // ==================== CERTIFICATIONS CRUD ====================
 async function loadCertifications() {
-    const res = await fetchWithAuth('/certifications');
-    const certs = await res.json();
-    const container = document.getElementById('certificationsList');
-    if (certs.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500 py-8">No certifications added yet.</div>';
-        return;
+    try {
+        const res = await fetchWithAuth('/certifications');
+        const certs = await res.json();
+        const container = document.getElementById('certificationsList');
+        if (certs.length === 0) {
+            container.innerHTML = '<div class="text-center text-gray-500 py-8">No certifications added yet.</div>';
+            return;
+        }
+        container.innerHTML = certs.map(c => `
+            <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
+                <div><span class="font-bold text-green-400">${escapeHtml(c.title)}</span><span class="ml-2 text-sm text-gray-400">– ${escapeHtml(c.issuer)} (${c.date})</span></div>
+                <div class="flex gap-2"><button onclick="editCert('${c._id}')" class="text-blue-400">✏️ Edit</button><button onclick="deleteCert('${c._id}')" class="text-red-400">🗑️ Delete</button></div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Load certifications error:', error);
     }
-    container.innerHTML = certs.map(c => `
-        <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
-            <div><span class="font-bold text-green-400">${escapeHtml(c.title)}</span><span class="ml-2 text-sm text-gray-400">– ${escapeHtml(c.issuer)} (${c.date})</span>${c.credentialId ? `<br><span class="text-xs text-gray-500">ID: ${escapeHtml(c.credentialId)}</span>` : ''}</div>
-            <div class="flex gap-2"><button onclick="editCert('${c._id}')" class="text-blue-400">✏️ Edit</button><button onclick="deleteCert('${c._id}')" class="text-red-400">🗑️ Delete</button></div>
-        </div>
-    `).join('');
 }
 
 window.editCert = async (id) => {
@@ -614,13 +622,155 @@ document.getElementById('certForm')?.addEventListener('submit', async (e) => {
 
 // ==================== REPOSITORIES CRUD ====================
 async function loadRepositories() {
-    const res = await fetchWithAuth('/repositories');
-    const repos = await res.json();
-    const container = document.getElementById('repositoriesList');
-    if (repos.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500 py-8">No repositories added yet.</div>';
-        return;
+    try {
+        const res = await fetchWithAuth('/repositories');
+        const repos = await res.json();
+        const container = document.getElementById('repositoriesList');
+        if (repos.length === 0) {
+            container.innerHTML = '<div class="text-center text-gray-500 py-8">No repositories added yet.</div>';
+            return;
+        }
+        container.innerHTML = repos.map(r => `
+            <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
+                <div><span class="font-bold text-green-400">${escapeHtml(r.name)}</span><span class="ml-2 text-xs text-gray-500">${r.language || 'N/A'}</span><div class="flex gap-3 mt-1 text-xs text-gray-500"><span>⭐ ${r.stars || 0}</span><span>🍴 ${r.forks || 0}</span></div></div>
+                <div class="flex gap-2"><button onclick="editRepo('${r._id}')" class="text-blue-400">✏️ Edit</button><button onclick="deleteRepo('${r._id}')" class="text-red-400">🗑️ Delete</button></div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Load repositories error:', error);
     }
-    container.innerHTML = repos.map(r => `
-        <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
-            <div><span class="font-bold text-green-400">${escapeHtml
+}
+
+window.editRepo = async (id) => {
+    const res = await fetchWithAuth(`/repositories/${id}`);
+    const repo = await res.json();
+    const newName = prompt('New repository name:', repo.name);
+    if (newName) {
+        await fetchWithAuth(`/repositories/${id}`, { method: 'PUT', body: JSON.stringify({ ...repo, name: newName }) });
+        loadRepositories();
+        showToast('Repository updated!', 'success');
+    }
+};
+
+window.deleteRepo = async (id) => {
+    if (confirm('Delete this repository?')) {
+        await fetchWithAuth(`/repositories/${id}`, { method: 'DELETE' });
+        loadRepositories();
+        showToast('Repository deleted!', 'success');
+    }
+};
+
+document.getElementById('repoForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = { name: document.getElementById('repoName').value, description: document.getElementById('repoDesc').value, language: document.getElementById('repoLang').value, stars: parseInt(document.getElementById('repoStars').value) || 0, forks: parseInt(document.getElementById('repoForks').value) || 0, updated: document.getElementById('repoUpdated').value, url: document.getElementById('repoUrl').value };
+    await fetchWithAuth('/repositories', { method: 'POST', body: JSON.stringify(data) });
+    loadRepositories();
+    e.target.reset();
+    showToast('Repository added!', 'success');
+});
+
+// ==================== REPORTS CRUD ====================
+async function loadReports() {
+    try {
+        const res = await fetchWithAuth('/reports');
+        const reports = await res.json();
+        const container = document.getElementById('reportsList');
+        if (reports.length === 0) {
+            container.innerHTML = '<div class="text-center text-gray-500 py-8">No reports added yet.</div>';
+            return;
+        }
+        container.innerHTML = reports.map(r => `
+            <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
+                <div><span class="font-bold text-green-400">${escapeHtml(r.title)}</span>${r.description ? `<br><span class="text-sm text-gray-400">${escapeHtml(r.description)}</span>` : ''}</div>
+                <div class="flex gap-2"><button onclick="editReport('${r._id}')" class="text-blue-400">✏️ Edit</button><button onclick="deleteReport('${r._id}')" class="text-red-400">🗑️ Delete</button></div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Load reports error:', error);
+    }
+}
+
+window.editReport = async (id) => {
+    const res = await fetchWithAuth(`/reports/${id}`);
+    const report = await res.json();
+    const newTitle = prompt('New title:', report.title);
+    if (newTitle) {
+        await fetchWithAuth(`/reports/${id}`, { method: 'PUT', body: JSON.stringify({ ...report, title: newTitle }) });
+        loadReports();
+        showToast('Report updated!', 'success');
+    }
+};
+
+window.deleteReport = async (id) => {
+    if (confirm('Delete this report?')) {
+        await fetchWithAuth(`/reports/${id}`, { method: 'DELETE' });
+        loadReports();
+        showToast('Report deleted!', 'success');
+    }
+};
+
+document.getElementById('reportForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = { title: document.getElementById('reportTitle').value, description: document.getElementById('reportDesc').value, pdfUrl: document.getElementById('reportUrl').value };
+    await fetchWithAuth('/reports', { method: 'POST', body: JSON.stringify(data) });
+    loadReports();
+    e.target.reset();
+    showToast('Report added!', 'success');
+});
+
+// ==================== CONTACTS ====================
+async function loadContacts() {
+    try {
+        const res = await fetchWithAuth('/contact');
+        const contacts = await res.json();
+        const container = document.getElementById('contactsList');
+        if (contacts.length === 0) {
+            container.innerHTML = '<div class="text-center text-gray-500 py-8">No contact messages yet.</div>';
+            return;
+        }
+        container.innerHTML = contacts.map(c => `
+            <div class="bg-black/50 border border-green-500/30 rounded-lg p-4">
+                <div class="flex justify-between items-start">
+                    <div><p class="font-bold text-green-400">${escapeHtml(c.name)}</p><p class="text-sm text-gray-400">📧 ${escapeHtml(c.email)}</p><p class="text-sm text-gray-300 mt-2">${escapeHtml(c.message)}</p><p class="text-xs text-gray-500 mt-2">📅 ${new Date(c.createdAt).toLocaleString()}</p></div>
+                    <button onclick="deleteContact('${c._id}')" class="text-red-400">🗑️ Delete</button>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Load contacts error:', error);
+    }
+}
+
+window.deleteContact = async (id) => {
+    if (confirm('Delete this contact message?')) {
+        await fetchWithAuth(`/contact/${id}`, { method: 'DELETE' });
+        loadContacts();
+        showToast('Contact deleted!', 'success');
+    }
+};
+
+// ==================== HELPER FUNCTIONS ====================
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+// ==================== LOGOUT ====================
+document.getElementById('logoutBtn')?.addEventListener('click', () => {
+    if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('adminToken');
+        window.location.href = 'admin-login.html';
+    }
+});
+
+// ==================== INITIAL LOAD ====================
+console.log('Initializing dashboard...');
+showSection('profile');
+</script>
+</body>
+</html>
