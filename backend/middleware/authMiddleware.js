@@ -10,6 +10,7 @@ export const protect = async (req, res, next) => {
       req.admin = decoded;
       next();
     } catch (error) {
+      console.error('Auth error:', error);
       res.status(401).json({ message: 'Not authorized, token failed' });
     }
   }
@@ -17,4 +18,9 @@ export const protect = async (req, res, next) => {
   if (!token) {
     res.status(401).json({ message: 'Not authorized, no token' });
   }
+};
+
+// ✅ YEH FUNCTION ADD KARO - ye missing tha
+export const verifyAdmin = async (req, res) => {
+  res.json({ valid: true, admin: req.admin });
 };
