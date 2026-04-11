@@ -1,13 +1,12 @@
 import axios from 'axios';
 
-// Use environment variable or fallback
-const API_URL = import.meta.env.VITE_API_URL || 'https://p7-project.onrender.com/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://p7-project-1.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_URL,
 });
 
-// Add token to requests if available
+// Add token to requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('admin_token');
   if (token) {
@@ -26,7 +25,7 @@ export const fetchCertifications = () => api.get('/certifications');
 export const fetchRepositories = () => api.get('/repositories');
 export const submitContact = (data) => api.post('/contact', data);
 
-// ============ ADMIN APIs (Protected) ============
+// ============ ADMIN APIs ============
 export const adminLogin = (data) => api.post('/auth/login', data);
 export const adminVerify = () => api.get('/auth/verify');
 
@@ -58,7 +57,7 @@ export const createRepository = (data) => api.post('/repositories', data);
 export const updateRepository = (id, data) => api.put(`/repositories/${id}`, data);
 export const deleteRepository = (id) => api.delete(`/repositories/${id}`);
 
-// Reports (Certificates)
+// Reports
 export const createReport = (data) => api.post('/reports', data);
 export const updateReport = (id, data) => api.put(`/reports/${id}`, data);
 export const deleteReport = (id) => api.delete(`/reports/${id}`);

@@ -6,6 +6,26 @@ import {
   fetchCertifications as apiFetchCertifications,
   fetchRepositories as apiFetchRepositories,
   fetchReports as apiFetchReports,
+  // Admin APIs
+  createSkill as apiCreateSkill,
+  updateSkill as apiUpdateSkill,
+  deleteSkill as apiDeleteSkill,
+  createExperience as apiCreateExperience,
+  updateExperience as apiUpdateExperience,
+  deleteExperience as apiDeleteExperience,
+  createProject as apiCreateProject,
+  updateProject as apiUpdateProject,
+  deleteProject as apiDeleteProject,
+  updateProfile as apiUpdateProfile,
+  createCertification as apiCreateCertification,
+  updateCertification as apiUpdateCertification,
+  deleteCertification as apiDeleteCertification,
+  createRepository as apiCreateRepository,
+  updateRepository as apiUpdateRepository,
+  deleteRepository as apiDeleteRepository,
+  createReport as apiCreateReport,
+  updateReport as apiUpdateReport,
+  deleteReport as apiDeleteReport,
 } from '../api';
 
 // Cache for offline fallback
@@ -123,6 +143,109 @@ export const fetchReportsData = async () => {
   }
 };
 
+// ============ ADMIN CRUD Functions ============
+// Skills
+export const createSkill = async (data) => {
+  const res = await apiCreateSkill(data);
+  return res.data;
+};
+
+export const updateSkill = async (id, data) => {
+  const res = await apiUpdateSkill(id, data);
+  return res.data;
+};
+
+export const deleteSkill = async (id) => {
+  const res = await apiDeleteSkill(id);
+  return res.data;
+};
+
+// Experiences
+export const createExperience = async (data) => {
+  const res = await apiCreateExperience(data);
+  return res.data;
+};
+
+export const updateExperience = async (id, data) => {
+  const res = await apiUpdateExperience(id, data);
+  return res.data;
+};
+
+export const deleteExperience = async (id) => {
+  const res = await apiDeleteExperience(id);
+  return res.data;
+};
+
+// Projects
+export const createProject = async (data) => {
+  const res = await apiCreateProject(data);
+  return res.data;
+};
+
+export const updateProject = async (id, data) => {
+  const res = await apiUpdateProject(id, data);
+  return res.data;
+};
+
+export const deleteProject = async (id) => {
+  const res = await apiDeleteProject(id);
+  return res.data;
+};
+
+// Profile
+export const updateProfile = async (data) => {
+  const res = await apiUpdateProfile(data);
+  return res.data;
+};
+
+// Certifications
+export const createCertification = async (data) => {
+  const res = await apiCreateCertification(data);
+  return res.data;
+};
+
+export const updateCertification = async (id, data) => {
+  const res = await apiUpdateCertification(id, data);
+  return res.data;
+};
+
+export const deleteCertification = async (id) => {
+  const res = await apiDeleteCertification(id);
+  return res.data;
+};
+
+// Repositories
+export const createRepository = async (data) => {
+  const res = await apiCreateRepository(data);
+  return res.data;
+};
+
+export const updateRepository = async (id, data) => {
+  const res = await apiUpdateRepository(id, data);
+  return res.data;
+};
+
+export const deleteRepository = async (id) => {
+  const res = await apiDeleteRepository(id);
+  return res.data;
+};
+
+// Reports
+export const createReport = async (data) => {
+  const res = await apiCreateReport(data);
+  return res.data;
+};
+
+export const updateReport = async (id, data) => {
+  const res = await apiUpdateReport(id, data);
+  return res.data;
+};
+
+export const deleteReport = async (id) => {
+  const res = await apiDeleteReport(id);
+  return res.data;
+};
+
 // Default profile fallback
 const defaultProfile = {
   name: "Gaurav Tiwari",
@@ -143,21 +266,3 @@ export let profile = cachedData.profile || defaultProfile;
 export let certifications = cachedData.certifications;
 export let repositories = cachedData.repositories;
 export let reports = cachedData.reports;
-
-// Update exports when data changes
-const updateExports = () => {
-  skills = cachedData.skills;
-  experiences = cachedData.experiences;
-  projects = cachedData.projects;
-  profile = cachedData.profile || defaultProfile;
-  certifications = cachedData.certifications;
-  repositories = cachedData.repositories;
-  reports = cachedData.reports;
-};
-
-// Override save to update exports
-const originalSave = saveToStorage;
-window.saveToStorage = () => {
-  originalSave();
-  updateExports();
-};
