@@ -64,7 +64,6 @@ const SkillsPage = () => {
     const loadSkills = async () => {
       try {
         const res = await fetchSkills();
-        // ✅ Use API data if available, otherwise fallback to defaultSkills
         if (res.data && res.data.length > 0) {
           setSkills(res.data);
         } else {
@@ -74,7 +73,7 @@ const SkillsPage = () => {
       } catch (err) {
         console.error('Error loading skills:', err);
         setError('Failed to load skills. Using fallback data.');
-        setSkills(defaultSkills); // fallback
+        setSkills(defaultSkills);
       } finally {
         setLoading(false);
       }
@@ -82,7 +81,6 @@ const SkillsPage = () => {
     loadSkills();
   }, []);
 
-  // Group skills by category
   const groupedSkills = skills.reduce((acc, skill) => {
     const category = skill.category || 'Uncategorized';
     if (!acc[category]) acc[category] = [];
@@ -90,14 +88,10 @@ const SkillsPage = () => {
     return acc;
   }, {});
 
-  // ================= UI =================
-
   if (loading) {
     return (
       <div className="min-h-screen bg-black/80 flex items-center justify-center">
-        <div className="text-green-400 text-xl animate-pulse">
-          Loading skills ...
-        </div>
+        <div className="text-green-400 text-xl animate-pulse">Loading skills matrix...</div>
       </div>
     );
   }
@@ -105,24 +99,14 @@ const SkillsPage = () => {
   return (
     <div className="min-h-screen bg-black/80 p-8">
       <div className="max-w-6xl mx-auto">
-
-        <button
-          onClick={() => navigate('/')}
-          className="mb-6 text-green-400 hover:underline flex items-center gap-2 font-mono"
-        >
+        <button onClick={() => navigate('/')} className="mb-6 text-green-400 hover:underline flex items-center gap-2 font-mono">
           ← Back to Terminal
         </button>
-
-        {/* Header */}
         <div className="glass-card p-6 border border-green-500/30 mb-8">
-          <h1 className="text-4xl font-bold text-green-400">⚡ Skills </h1>
-          <p className="text-gray-400 font-mono">
-            &gt; categorized professional skill inventory
-          </p>
+          <h1 className="text-4xl font-bold text-green-400">⚡ Skills Matrix</h1>
+          <p className="text-gray-400 font-mono">&gt; categorized professional skill inventory</p>
           {error && <p className="text-yellow-400 text-sm mt-2">{error}</p>}
         </div>
-
-        {/* Skills */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {Object.entries(groupedSkills).map(([category, items], idx) => (
             <motion.div
@@ -132,13 +116,10 @@ const SkillsPage = () => {
               transition={{ delay: idx * 0.1 }}
               className="glass-card p-5 border border-green-500/30 hover:border-green-500/60"
             >
-              <h2 className="text-xl text-green-400 mb-3 border-b border-green-500/30 pb-2">
-                {category}
-              </h2>
-
+              <h2 className="text-xl text-green-400 mb-3 border-b border-green-500/30 pb-2">{category}</h2>
               <ul className="space-y-2">
                 {items.map((skill, i) => (
-                  <li key={i} className="text-gray-300 text-sm flex gap-2">
+                  <li key={i} className="text-green-400 text-sm flex gap-2">  {/* ✅ FIXED: text-green-400 instead of text-gray-300 */}
                     <span className="text-green-500">›</span>
                     {skill}
                   </li>
@@ -147,12 +128,9 @@ const SkillsPage = () => {
             </motion.div>
           ))}
         </div>
-
-        {/* Footer */}
         <div className="mt-12 text-center text-xs text-gray-500 font-mono">
           <span className="text-green-400">$</span> skills --load --secure ✔
         </div>
-
       </div>
     </div>
   );
