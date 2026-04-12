@@ -5,6 +5,29 @@ import { useEffect, useState } from "react";
 import { fetchExperiences } from "../api";
 import { experiences as staticExperiences } from "../data/portfolioData";
 
+// Convert static experience format to the format expected by ExperienceTimeline
+const normalizeStaticExperience = (exp) => {
+  // If already in API format (with startDate, endDate, etc.), return as is
+  if (exp.startDate) return exp;
+
+  // Extract dates from duration string like "Nov 2025 – Present" or "Aug 2025 – Nov 2025"
+  let startDate = exp.duration?.split(' – ')[0] || exp.startDate || 'N/A';
+  let endDate = exp.duration?.split(' – ')[1] || exp.endDate || 'N/A';
+  const isCurrent = endDate === 'Present' || endDate === 'present' || exp.isCurrent || false;
+
+  return {
+    _id: exp.id || `static_${exp.role}_${exp.company}`,
+    role: exp.role,
+    company: exp.company,
+    startDate: startDate,
+    endDate: isCurrent ? null : (endDate !== 'N/A' ? endDate : null),
+    isCurrent: isCurrent,
+    responsibilities: exp.responsibilities || exp.highlights || [],
+    // Keep original description if needed
+    description: exp.description,
+  };
+};
+
 const ExperiencePage = () => {
   const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,12 +37,17 @@ const ExperiencePage = () => {
       try {
         const res = await fetchExperiences();
         const apiExperiences = (res.data && res.data.length > 0) ? res.data : [];
-        
-        // Merge static and API experiences, avoiding duplicates by role+company or _id
-        const allExperiences = [...staticExperiences];
+
+        // Normalize static experiences
+        const staticNormalized = Array.isArray(staticExperiences)
+          ? staticExperiences.map(normalizeStaticExperience)
+          : [];
+
+        // Merge: start with static, then add API entries that don't duplicate
+        const allExperiences = [...staticNormalized];
         apiExperiences.forEach(apiExp => {
-          const exists = allExperiences.some(exp => 
-            (exp.role === apiExp.role && exp.company === apiExp.company) || 
+          const exists = allExperiences.some(exp =>
+            (exp.role === apiExp.role && exp.company === apiExp.company) ||
             exp._id === apiExp._id
           );
           if (!exists) {
@@ -29,7 +57,11 @@ const ExperiencePage = () => {
         setExperiences(allExperiences);
       } catch (error) {
         console.error("Error loading experiences from API, using static only", error);
-        setExperiences(staticExperiences);
+        // Fallback to static only
+        const staticNormalized = Array.isArray(staticExperiences)
+          ? staticExperiences.map(normalizeStaticExperience)
+          : [];
+        setExperiences(staticNormalized);
       } finally {
         setLoading(false);
       }

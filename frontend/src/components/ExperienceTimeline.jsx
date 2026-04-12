@@ -1,8 +1,32 @@
 const ExperienceTimeline = ({ experiences }) => {
+  // Helper to convert API experience to the static format expected by the JSX
+  const normalizeExperience = (exp) => {
+    // If it already has `duration` and `highlights` (static format), return as is
+    if (exp.duration) return exp;
+
+    // Otherwise, assume it's from the API – convert to static-like structure
+    const start = exp.startDate || 'N/A';
+    const end = exp.isCurrent ? 'Present' : (exp.endDate || 'N/A');
+    const duration = `${start} – ${end}`;
+
+    return {
+      id: exp._id,
+      role: exp.role,
+      company: exp.company,
+      location: exp.location || 'N/A',
+      duration: duration,
+      description: exp.description || '',
+      highlights: exp.responsibilities || [],
+      companyInfo: exp.companyInfo || '',
+      clients: exp.clients || []
+    };
+  };
+
+  const normalizedExperiences = experiences.map(normalizeExperience);
+
   return (
     <div className="space-y-6">
-
-      {experiences.map((exp) => (
+      {normalizedExperiences.map((exp) => (
         <div
           key={exp.id}
           className="glass-panel p-5 border border-neon/20 rounded hover:shadow-neon transition"
@@ -42,7 +66,7 @@ const ExperienceTimeline = ({ experiences }) => {
           )}
 
           {/* Clients */}
-          {exp.clients && (
+          {exp.clients && exp.clients.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
               {exp.clients.map((c, i) => (
                 <span
@@ -56,7 +80,6 @@ const ExperienceTimeline = ({ experiences }) => {
           )}
         </div>
       ))}
-
     </div>
   );
 };
