@@ -4,11 +4,19 @@ import Sidebar from "./Sidebar";
 import ScanlineOverlay from "./ScanlineOverlay";
 import { Toaster } from "react-hot-toast";
 import { Shield } from "lucide-react";
-import { useAdmin } from "../context/AdminContext";
+
+// Try to import AdminContext, but don't fail if it doesn't exist
+let useAdmin = () => ({ isAdmin: false });
+try {
+  const adminContext = require("../context/AdminContext");
+  if (adminContext.useAdmin) useAdmin = adminContext.useAdmin;
+} catch (e) {
+  console.warn("AdminContext not available, admin features disabled");
+}
 
 const Layout = ({ children }) => {
   const [darkMode, setDarkMode] = useState(true);
-  const { isAdmin } = useAdmin();
+  const { isAdmin = false } = useAdmin();
   const navigate = useNavigate();
   const toggleDarkMode = () => setDarkMode(!darkMode);
 

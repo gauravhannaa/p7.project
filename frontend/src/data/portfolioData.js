@@ -34,6 +34,19 @@ import {
   deleteReport as apiDeleteReport,
 } from '../api';
 
+// ================= DEFAULT PROFILE (MOVED BEFORE USAGE) =================
+const defaultProfile = {
+  name: "Gaurav Tiwari",
+  role: "Tech Support Engineer | Cyber Security Enthusiast",
+  email: "your-email@example.com",
+  github: "https://github.com/gauravhannaa",
+  linkedin: "https://linkedin.com/in/gaurav-tiwari",
+  instagram: "https://instagram.com/mrx_gaurav__007",
+  facebook: "https://www.facebook.com/Gauravhanna",
+  availability: "Open to Remote Opportunities",
+  bio: "Tech Support Engineer with expertise in system troubleshooting, network security, and enterprise IT support."
+};
+
 // ================= DEFAULT PROJECTS (ADDED) =================
 const defaultProjects = [
   {
@@ -287,19 +300,6 @@ export const deleteReport = async (id) => {
   const res = await apiDeleteReport(id);
   await updateCacheAfterCRUD(fetchReportsData, "reports");
   return res.data;
-};
-
-// ================= DEFAULT PROFILE =================
-const defaultProfile = {
-  name: "Gaurav Tiwari",
-  role: "Tech Support Engineer | Cyber Security Enthusiast",
-  email: "your-email@example.com",
-  github: "https://github.com/gauravhannaa",
-  linkedin: "https://linkedin.com/in/gaurav-tiwari",
-  instagram: "https://instagram.com/mrx_gaurav__007",
-  facebook: "https://www.facebook.com/Gauravhanna",
-  availability: "Open to Remote Opportunities",
-  bio: "Tech Support Engineer with expertise in system troubleshooting, network security, and enterprise IT support."
 };
 
 // ================= EXPORT =================
