@@ -26,7 +26,7 @@ async function fetchWithAuth(url, options = {}) {
 function showToast(message, type = 'success') {
     const toast = document.createElement('div');
     toast.className = `fixed bottom-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg transition-all duration-300 ${
-        type === 'success' ? 'bg-green-500 text-black' : 'bg-red-500 text-white'
+        type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
     }`;
     toast.innerHTML = `
         <div class="flex items-center gap-3">
@@ -81,7 +81,7 @@ async function loadProfile() {
         if (profile.profileImage && profile.profileImage !== '') {
             photoDiv.innerHTML = `<img src="${profile.profileImage}" class="w-16 h-16 rounded-full object-cover border border-green-500">`;
         } else {
-            photoDiv.innerHTML = '<span class="text-sm text-gray-400">No photo uploaded</span>';
+            photoDiv.innerHTML = '<span class="text-sm text-green-600">No photo uploaded</span>';
         }
     } catch (error) {
         console.error('Load profile error:', error);
@@ -153,19 +153,19 @@ async function loadSkills() {
     const skills = await res.json();
     const container = document.getElementById('skillsList');
     if (skills.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500 py-8">No skills added yet. Add your first skill above!</div>';
+        container.innerHTML = '<div class="text-center text-green-600 py-8">No skills added yet. Add your first skill above!</div>';
         return;
     }
     container.innerHTML = skills.map(skill => `
-        <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
+        <div class="bg-gray-900 border border-green-600 rounded-lg p-4 flex justify-between items-center">
             <div>
-                <span class="font-bold text-green-400">${escapeHtml(skill.name)}</span>
-                <span class="ml-3 text-green-500">${skill.percentage}%</span>
-                <span class="ml-2 text-xs text-gray-500">${skill.category || 'Technical'}</span>
+                <span class="font-bold text-green-400 text-lg">${escapeHtml(skill.name)}</span>
+                <span class="ml-3 text-green-500 font-semibold">${skill.percentage}%</span>
+                <span class="ml-2 text-xs text-green-600">${skill.category || 'Technical'}</span>
             </div>
             <div class="flex gap-3">
-                <button onclick="editSkill('${skill._id}', '${escapeHtml(skill.name)}', ${skill.percentage})" class="text-blue-400 hover:text-blue-300 transition">✏️ Edit</button>
-                <button onclick="deleteSkill('${skill._id}')" class="text-red-400 hover:text-red-300 transition">🗑️ Delete</button>
+                <button onclick="editSkill('${skill._id}', '${escapeHtml(skill.name)}', ${skill.percentage})" class="text-green-400 hover:text-green-300 transition">✏️ Edit</button>
+                <button onclick="deleteSkill('${skill._id}')" class="text-red-500 hover:text-red-400 transition">🗑️ Delete</button>
             </div>
         </div>
     `).join('');
@@ -213,24 +213,24 @@ async function loadProjects() {
     const projects = await res.json();
     const container = document.getElementById('projectsList');
     if (projects.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500 py-8 col-span-2">No projects yet. Add your first project above!</div>';
+        container.innerHTML = '<div class="text-center text-green-600 py-8 col-span-2">No projects yet. Add your first project above!</div>';
         return;
     }
     container.innerHTML = projects.map(proj => `
-        <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-4">
+        <div class="bg-gray-900 border border-green-600 rounded-lg p-4">
             <h3 class="text-xl font-bold text-green-400">${escapeHtml(proj.title)}</h3>
-            <p class="text-gray-400 text-sm mt-1">${escapeHtml(proj.description || '')}</p>
+            <p class="text-green-700 text-sm mt-1">${escapeHtml(proj.description || '')}</p>
             <div class="flex flex-wrap gap-2 mt-2">
-                ${proj.technologies ? proj.technologies.map(t => `<span class="text-xs px-2 py-0.5 bg-green-500/20 rounded">${escapeHtml(t)}</span>`).join('') : ''}
+                ${proj.technologies ? proj.technologies.map(t => `<span class="text-xs px-2 py-0.5 bg-green-900 text-green-300 rounded">${escapeHtml(t)}</span>`).join('') : ''}
             </div>
             <div class="flex gap-3 mt-3 text-sm">
-                ${proj.demoLink ? `<a href="${proj.demoLink}" target="_blank" class="text-green-400 hover:text-green-300">🔗 Demo</a>` : ''}
-                ${proj.githubLink ? `<a href="${proj.githubLink}" target="_blank" class="text-green-400 hover:text-green-300">📦 GitHub</a>` : ''}
-                ${proj.status ? `<span class="text-gray-500">📌 ${escapeHtml(proj.status)}</span>` : ''}
+                ${proj.demoLink ? `<a href="${proj.demoLink}" target="_blank" class="text-green-500 hover:text-green-400">🔗 Demo</a>` : ''}
+                ${proj.githubLink ? `<a href="${proj.githubLink}" target="_blank" class="text-green-500 hover:text-green-400">📦 GitHub</a>` : ''}
+                ${proj.status ? `<span class="text-green-600">📌 ${escapeHtml(proj.status)}</span>` : ''}
             </div>
-            <div class="flex gap-3 mt-3 pt-3 border-t border-green-500/20">
-                <button onclick="editProject('${proj._id}')" class="text-blue-400 hover:text-blue-300 text-sm">✏️ Edit</button>
-                <button onclick="deleteProject('${proj._id}')" class="text-red-400 hover:text-red-300 text-sm">🗑️ Delete</button>
+            <div class="flex gap-3 mt-3 pt-3 border-t border-green-800">
+                <button onclick="editProject('${proj._id}')" class="text-green-400 hover:text-green-300 text-sm">✏️ Edit</button>
+                <button onclick="deleteProject('${proj._id}')" class="text-red-500 hover:text-red-400 text-sm">🗑️ Delete</button>
             </div>
         </div>
     `).join('');
@@ -282,22 +282,22 @@ async function loadExperience() {
     const experiences = await res.json();
     const container = document.getElementById('experienceList');
     if (experiences.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500 py-8">No experience entries. Add your work history above!</div>';
+        container.innerHTML = '<div class="text-center text-green-600 py-8">No experience entries. Add your work history above!</div>';
         return;
     }
     container.innerHTML = experiences.map(exp => `
-        <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-4">
+        <div class="bg-gray-900 border border-green-600 rounded-lg p-4">
             <div class="flex justify-between items-start flex-wrap gap-2">
                 <div class="flex-1">
                     <h3 class="text-xl font-bold text-green-400">${escapeHtml(exp.role)} @ ${escapeHtml(exp.company)}</h3>
-                    <p class="text-gray-400 text-sm">${exp.startDate} - ${exp.isCurrent ? 'Present' : (exp.endDate || 'N/A')}</p>
-                    <ul class="list-disc list-inside mt-2 text-sm text-gray-300">
+                    <p class="text-green-600 text-sm">${exp.startDate} - ${exp.isCurrent ? 'Present' : (exp.endDate || 'N/A')}</p>
+                    <ul class="list-disc list-inside mt-2 text-sm text-green-700">
                         ${exp.responsibilities ? exp.responsibilities.map(r => `<li>${escapeHtml(r)}</li>`).join('') : '<li>No responsibilities listed</li>'}
                     </ul>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="editExperience('${exp._id}')" class="text-blue-400 hover:text-blue-300">✏️ Edit</button>
-                    <button onclick="deleteExperience('${exp._id}')" class="text-red-400 hover:text-red-300">🗑️ Delete</button>
+                    <button onclick="editExperience('${exp._id}')" class="text-green-400 hover:text-green-300">✏️ Edit</button>
+                    <button onclick="deleteExperience('${exp._id}')" class="text-red-500 hover:text-red-400">🗑️ Delete</button>
                 </div>
             </div>
         </div>
@@ -350,19 +350,19 @@ async function loadReports() {
     const reports = await res.json();
     const container = document.getElementById('reportsList');
     if (reports.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500 py-8">No reports/certificates added yet.</div>';
+        container.innerHTML = '<div class="text-center text-green-600 py-8">No reports/certificates added yet.</div>';
         return;
     }
     container.innerHTML = reports.map(r => `
-        <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
+        <div class="bg-gray-900 border border-green-600 rounded-lg p-4 flex justify-between items-center">
             <div>
                 <span class="font-bold text-green-400">${escapeHtml(r.title)}</span>
-                ${r.description ? `<br><span class="text-sm text-gray-400">${escapeHtml(r.description)}</span>` : ''}
-                ${r.pdfUrl && r.pdfUrl !== '#' ? `<br><a href="${r.pdfUrl}" target="_blank" class="text-xs text-green-400">📄 View Certificate</a>` : ''}
+                ${r.description ? `<br><span class="text-sm text-green-600">${escapeHtml(r.description)}</span>` : ''}
+                ${r.pdfUrl && r.pdfUrl !== '#' ? `<br><a href="${r.pdfUrl}" target="_blank" class="text-xs text-green-500 hover:text-green-400">📄 View Certificate</a>` : ''}
             </div>
             <div class="flex gap-2">
-                <button onclick="editReport('${r._id}')" class="text-blue-400 hover:text-blue-300">✏️ Edit</button>
-                <button onclick="deleteReport('${r._id}')" class="text-red-400 hover:text-red-300">🗑️ Delete</button>
+                <button onclick="editReport('${r._id}')" class="text-green-400 hover:text-green-300">✏️ Edit</button>
+                <button onclick="deleteReport('${r._id}')" class="text-red-500 hover:text-red-400">🗑️ Delete</button>
             </div>
         </div>
     `).join('');
@@ -409,20 +409,20 @@ async function loadCertifications() {
     const certs = await res.json();
     const container = document.getElementById('certificationsList');
     if (certs.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500 py-8">No certifications added yet.</div>';
+        container.innerHTML = '<div class="text-center text-green-600 py-8">No certifications added yet.</div>';
         return;
     }
     container.innerHTML = certs.map(c => `
-        <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
+        <div class="bg-gray-900 border border-green-600 rounded-lg p-4 flex justify-between items-center">
             <div>
                 <span class="font-bold text-green-400">${escapeHtml(c.title)}</span>
-                <span class="ml-2 text-sm text-gray-400">– ${escapeHtml(c.issuer)} (${c.date})</span>
-                ${c.credentialId ? `<br><span class="text-xs text-gray-500">ID: ${escapeHtml(c.credentialId)}</span>` : ''}
-                ${c.verifyUrl && c.verifyUrl !== '#' ? `<br><a href="${c.verifyUrl}" target="_blank" class="text-xs text-green-400">🔗 Verify</a>` : ''}
+                <span class="ml-2 text-sm text-green-600">– ${escapeHtml(c.issuer)} (${c.date})</span>
+                ${c.credentialId ? `<br><span class="text-xs text-green-700">ID: ${escapeHtml(c.credentialId)}</span>` : ''}
+                ${c.verifyUrl && c.verifyUrl !== '#' ? `<br><a href="${c.verifyUrl}" target="_blank" class="text-xs text-green-500 hover:text-green-400">🔗 Verify</a>` : ''}
             </div>
             <div class="flex gap-2">
-                <button onclick="editCert('${c._id}')" class="text-blue-400 hover:text-blue-300">✏️ Edit</button>
-                <button onclick="deleteCert('${c._id}')" class="text-red-400 hover:text-red-300">🗑️ Delete</button>
+                <button onclick="editCert('${c._id}')" class="text-green-400 hover:text-green-300">✏️ Edit</button>
+                <button onclick="deleteCert('${c._id}')" class="text-red-500 hover:text-red-400">🗑️ Delete</button>
             </div>
         </div>
     `).join('');
@@ -471,24 +471,24 @@ async function loadRepositories() {
     const repos = await res.json();
     const container = document.getElementById('repositoriesList');
     if (repos.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500 py-8">No repositories added yet.</div>';
+        container.innerHTML = '<div class="text-center text-green-600 py-8">No repositories added yet.</div>';
         return;
     }
     container.innerHTML = repos.map(r => `
-        <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
+        <div class="bg-gray-900 border border-green-600 rounded-lg p-4 flex justify-between items-center">
             <div>
                 <span class="font-bold text-green-400">${escapeHtml(r.name)}</span>
-                <span class="ml-2 text-xs text-gray-500">${r.language || 'N/A'}</span>
-                ${r.description ? `<br><span class="text-sm text-gray-400">${escapeHtml(r.description)}</span>` : ''}
-                <div class="flex gap-3 mt-1 text-xs text-gray-500">
+                <span class="ml-2 text-xs text-green-600">${r.language || 'N/A'}</span>
+                ${r.description ? `<br><span class="text-sm text-green-600">${escapeHtml(r.description)}</span>` : ''}
+                <div class="flex gap-3 mt-1 text-xs text-green-600">
                     <span>⭐ ${r.stars || 0}</span>
                     <span>🍴 ${r.forks || 0}</span>
                     <span>📅 ${r.updated || 'N/A'}</span>
                 </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="editRepo('${r._id}')" class="text-blue-400 hover:text-blue-300">✏️ Edit</button>
-                <button onclick="deleteRepo('${r._id}')" class="text-red-400 hover:text-red-300">🗑️ Delete</button>
+                <button onclick="editRepo('${r._id}')" class="text-green-400 hover:text-green-300">✏️ Edit</button>
+                <button onclick="deleteRepo('${r._id}')" class="text-red-500 hover:text-red-400">🗑️ Delete</button>
             </div>
         </div>
     `).join('');
@@ -539,19 +539,19 @@ async function loadContacts() {
     const contacts = await res.json();
     const container = document.getElementById('contactsList');
     if (contacts.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-500 py-8">No contact messages yet.</div>';
+        container.innerHTML = '<div class="text-center text-green-600 py-8">No contact messages yet.</div>';
         return;
     }
     container.innerHTML = contacts.map(c => `
-        <div class="bg-gray-900/50 border border-green-500/30 rounded-lg p-4">
+        <div class="bg-gray-900 border border-green-600 rounded-lg p-4">
             <div class="flex justify-between items-start">
                 <div class="flex-1">
                     <p class="font-bold text-green-400">${escapeHtml(c.name)}</p>
-                    <p class="text-sm text-gray-400">📧 ${escapeHtml(c.email)}</p>
-                    <p class="text-sm text-gray-300 mt-2">${escapeHtml(c.message)}</p>
-                    <p class="text-xs text-gray-500 mt-2">📅 ${new Date(c.createdAt).toLocaleString()}</p>
+                    <p class="text-sm text-green-600">📧 ${escapeHtml(c.email)}</p>
+                    <p class="text-sm text-green-700 mt-2">${escapeHtml(c.message)}</p>
+                    <p class="text-xs text-green-600 mt-2">📅 ${new Date(c.createdAt).toLocaleString()}</p>
                 </div>
-                <button onclick="deleteContact('${c._id}')" class="text-red-400 hover:text-red-300">🗑️ Delete</button>
+                <button onclick="deleteContact('${c._id}')" class="text-red-500 hover:text-red-400">🗑️ Delete</button>
             </div>
         </div>
     `).join('');

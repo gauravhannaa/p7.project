@@ -24,7 +24,7 @@ export const fetchProfile = () => api.get('/profile');
 export const fetchCertifications = () => api.get('/certifications');
 export const fetchRepositories = () => api.get('/repositories');
 export const submitContact = (data) => api.post('/contact', data);
-
+export const fetchSkills = () => api.get('/skills');
 // ============ ADMIN APIs ============
 export const adminLogin = (data) => api.post('/auth/login', data);
 export const adminVerify = () => api.get('/auth/verify');
