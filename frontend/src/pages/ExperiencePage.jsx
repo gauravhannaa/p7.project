@@ -1,9 +1,12 @@
 import Layout from "../components/Layout";
 import PageHeader from "../components/PageHeader";
 import ExperienceTimeline from "../components/ExperienceTimeline";
-import { experiences } from "../data/portfolioData";
+import { experiences as importedExperiences } from "../data/portfolioData";
 
 const ExperiencePage = () => {
+  // Fallback: use empty array if importedExperiences is undefined or not an array
+  const experiences = Array.isArray(importedExperiences) ? importedExperiences : [];
+
   return (
     <Layout>
       <PageHeader title="Professional Experience Logs" />
@@ -23,7 +26,11 @@ const ExperiencePage = () => {
 
       {/* Timeline */}
       <div className="glass-panel p-6">
-        <ExperienceTimeline experiences={experiences} />
+        {experiences.length === 0 ? (
+          <p className="text-gray-400 text-center py-4">No experience data available. Use admin dashboard to add.</p>
+        ) : (
+          <ExperienceTimeline experiences={experiences} />
+        )}
       </div>
 
       {/* Terminal Style Footer */}
