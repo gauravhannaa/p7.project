@@ -12,6 +12,8 @@ import CertificationsPage from "./pages/CertificationsPage";
 import ExperiencePage from "./pages/ExperiencePage";
 import ContactPage from "./pages/ContactPage";
 import ResumePage from "./pages/ResumePage";
+import SkillsPage from "./pages/SkillsPage";           // ✅ ADDED
+import ReportsPage from "./pages/ReportsPage";         // ✅ ADDED
 import AdminDashboard from "./components/AdminDashboard";
 import AdminLogin from "./components/AdminLogin";
 
@@ -32,6 +34,8 @@ function AnimatedRoutes() {
         <Route path="/experience" element={<ExperiencePage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/resume" element={<ResumePage />} />
+        <Route path="/skills" element={<SkillsPage />} />        {/* ✅ ADDED */}
+        <Route path="/reports" element={<ReportsPage />} />      {/* ✅ ADDED */}
         <Route path="/admin" element={isAdmin ? <AdminDashboard /> : <AdminLogin />} />
         <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>
