@@ -13,15 +13,23 @@ const ExperiencePage = () => {
     const loadExperiences = async () => {
       try {
         const res = await fetchExperiences();
-        if (res.data && res.data.length > 0) {
-          setExperiences(res.data);
-        } else {
-          // Fallback to static data if API returns empty
-          setExperiences(Array.isArray(staticExperiences) ? staticExperiences : []);
-        }
+        const apiExperiences = (res.data && res.data.length > 0) ? res.data : [];
+        
+        // Merge static and API experiences, avoiding duplicates by role+company or _id
+        const allExperiences = [...staticExperiences];
+        apiExperiences.forEach(apiExp => {
+          const exists = allExperiences.some(exp => 
+            (exp.role === apiExp.role && exp.company === apiExp.company) || 
+            exp._id === apiExp._id
+          );
+          if (!exists) {
+            allExperiences.push(apiExp);
+          }
+        });
+        setExperiences(allExperiences);
       } catch (error) {
-        console.error("Error loading experiences from API, using static fallback", error);
-        setExperiences(Array.isArray(staticExperiences) ? staticExperiences : []);
+        console.error("Error loading experiences from API, using static only", error);
+        setExperiences(staticExperiences);
       } finally {
         setLoading(false);
       }
