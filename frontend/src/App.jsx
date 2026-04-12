@@ -18,7 +18,7 @@ import AdminLogin from "./components/AdminLogin";
 // AnimatedRoutes component with page transitions
 function AnimatedRoutes() {
   const location = useLocation();
-  const { isAdmin } = useAdmin();
+  const { isAdmin } = useAdmin(); // now safe
   
   return (
     <AnimatePresence mode="wait">

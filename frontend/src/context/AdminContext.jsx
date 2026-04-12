@@ -4,11 +4,18 @@ import toast from 'react-hot-toast';
 
 const AdminContext = createContext();
 
-export const useAdmin = () => useContext(AdminContext);
+export const useAdmin = () => {
+  const context = useContext(AdminContext);
+  if (!context) {
+    throw new Error('useAdmin must be used within an AdminProvider');
+  }
+  return context;
+};
 
 export const AdminProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [adminData, setAdminData] = useState(null);
 
   useEffect(() => {
     checkAuth();
@@ -16,16 +23,23 @@ export const AdminProvider = ({ children }) => {
 
   const checkAuth = async () => {
     const token = localStorage.getItem('admin_token');
-    if (token) {
-      try {
-        await adminVerify();
-        setIsAdmin(true);
-      } catch (error) {
-        localStorage.removeItem('admin_token');
-        setIsAdmin(false);
-      }
+    if (!token) {
+      setLoading(false);
+      return;
     }
-    setLoading(false);
+
+    try {
+      const res = await adminVerify();
+      setIsAdmin(true);
+      setAdminData(res.data);
+    } catch (error) {
+      console.error('Auth verification failed:', error);
+      localStorage.removeItem('admin_token');
+      setIsAdmin(false);
+      setAdminData(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const login = async (credentials) => {
@@ -33,10 +47,16 @@ export const AdminProvider = ({ children }) => {
       const res = await adminLogin(credentials);
       localStorage.setItem('admin_token', res.data.token);
       setIsAdmin(true);
-      toast.success('Admin access granted!');
+      setAdminData(res.data.user || null);
+      toast.success('Admin access granted!', {
+        style: { background: '#0a0a0a', color: '#00ff41' }
+      });
       return true;
     } catch (error) {
-      toast.error('Invalid credentials');
+      console.error('Login error:', error);
+      toast.error(error.response?.data?.message || 'Invalid credentials', {
+        style: { background: '#0a0a0a', color: '#ff4444' }
+      });
       return false;
     }
   };
@@ -44,11 +64,14 @@ export const AdminProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('admin_token');
     setIsAdmin(false);
-    toast.success('Logged out');
+    setAdminData(null);
+    toast.success('Logged out successfully', {
+      style: { background: '#0a0a0a', color: '#00ff41' }
+    });
   };
 
   return (
-    <AdminContext.Provider value={{ isAdmin, loading, login, logout }}>
+    <AdminContext.Provider value={{ isAdmin, loading, adminData, login, logout, checkAuth }}>
       {children}
     </AdminContext.Provider>
   );

@@ -27,7 +27,8 @@ export const submitContact = (data) => api.post('/contact', data);
 
 // ============ ADMIN APIs ============
 export const adminLogin = (data) => api.post('/auth/login', data);
-export const adminVerify = () => api.get('/auth/verify');
+// Handle missing /auth/verify endpoint gracefully (no error thrown)
+export const adminVerify = () => api.get('/auth/verify').catch(() => ({ data: { valid: false } }));
 
 // Skills
 export const createSkill = (data) => api.post('/skills', data);

@@ -34,7 +34,7 @@ import {
   deleteReport as apiDeleteReport,
 } from '../api';
 
-// ================= DEFAULT PROFILE (MOVED BEFORE USAGE) =================
+// ================= DEFAULT PROFILE =================
 const defaultProfile = {
   name: "Gaurav Tiwari",
   role: "Tech Support Engineer | Cyber Security Enthusiast",
@@ -47,47 +47,74 @@ const defaultProfile = {
   bio: "Tech Support Engineer with expertise in system troubleshooting, network security, and enterprise IT support."
 };
 
-// ================= DEFAULT PROJECTS (ADDED) =================
+// ================= ✅ DEFAULT EXPERIENCES (ADDED) =================
+const defaultExperiences = [
+  {
+    id: 1,
+    role: "Tech Support Engineer (L1 / L2)",
+    company: "Starlink Communication Pvt. Ltd.",
+    location: "Gurgaon (Client: Maruti Suzuki India Ltd.)",
+    duration: "Nov 2025 – Present",
+
+    description:
+      "Delivering enterprise-level IT support and ensuring system availability for a large-scale automotive environment.",
+
+    highlights: [
+      "L1/L2 technical & desktop support (remote + onsite)",
+      "Windows 10/11 troubleshooting (login, crash, performance)",
+      "MS Outlook (OST/PST, profiles) & Office support",
+      "LAN/Wi-Fi, DNS, DHCP, TCP/IP issue resolution",
+      "Incident management via CRM tools (SLA based)",
+      "Hardware troubleshooting (PCs, printers, scanners)",
+      "Software installation, patches & security updates",
+      "Onsite IT support at Maruti Suzuki",
+      "System optimization & downtime reduction"
+    ]
+  },
+  {
+    id: 2,
+    role: "IT Support Trainee",
+    company: "APMP MOTOR LLP",
+    location: "Manesar, Gurgaon",
+    duration: "Aug 2025 – Nov 2025",
+
+    description:
+      "Gained hands-on experience in IT support, troubleshooting, and enterprise system environments.",
+
+    highlights: [
+      "Basic desktop & system troubleshooting",
+      "Software installation & configuration",
+      "Networking fundamentals",
+      "Worked with IT team on real-world issues"
+    ]
+  }
+];
+
+// ================= DEFAULT PROJECTS =================
 const defaultProjects = [
   {
     id: 1,
     title: "🚀 DevOps / Cybersecurity Portfolio Web App",
     tech: ["React.js", "Vite", "Tailwind CSS", "JavaScript"],
-    description:
-      "A modern DevOps-focused portfolio web application featuring a terminal-style hacker UI. Designed to showcase projects, repositories, and analytics with strong performance.",
-    highlights: [
-      "Terminal-style hacker UI",
-      "Dynamic sections",
-      "GitHub integration",
-      "Responsive design",
-      "Fast performance using Vite"
-    ],
-    purpose:
-      "To demonstrate frontend development, DevOps concepts, and UI/UX optimization.",
+    description: "Modern DevOps portfolio with hacker UI",
+    highlights: ["Terminal UI", "GitHub integration", "Responsive"],
+    purpose: "Frontend + DevOps showcase",
     liveLink: "https://gauravhanna-spy.onrender.com/",
     github: "https://github.com/gauravhannaa/portfolio"
   },
   {
     id: 2,
     title: "📱 Android Surveillance & Monitoring Application",
-    tech: ["Kotlin", "Android SDK", "OkHttp", "JSON APIs"],
-    description:
-      "Android-based monitoring system to track device activity and securely transmit data.",
-    highlights: [
-      "Live GPS tracking",
-      "Network monitoring",
-      "Background services",
-      "Secure API communication",
-      "Remote logging"
-    ],
-    purpose:
-      "To demonstrate Android development and secure real-time data handling.",
+    tech: ["Kotlin", "Android SDK", "OkHttp"],
+    description: "Real-time monitoring Android app",
+    highlights: ["GPS tracking", "Secure API", "Background service"],
+    purpose: "Android + Security project",
     liveLink: "#",
     github: "https://github.com/gauravhannaa/android-surveillance"
   }
 ];
 
-// ================= CACHE SYSTEM =================
+// ================= CACHE =================
 const CACHE_KEY = "portfolio_cache_v2";
 
 let cachedData = {
@@ -100,7 +127,7 @@ let cachedData = {
   reports: [],
 };
 
-// Load cache safely
+// Load cache
 const loadFromStorage = () => {
   try {
     const saved = localStorage.getItem(CACHE_KEY);
@@ -112,7 +139,6 @@ const loadFromStorage = () => {
   }
 };
 
-// Save cache safely
 const saveToStorage = () => {
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify(cachedData));
@@ -123,7 +149,7 @@ const saveToStorage = () => {
 
 loadFromStorage();
 
-// Generic safe fetch wrapper
+// Safe fetch
 const safeFetch = async (apiCall, key) => {
   try {
     const res = await apiCall();
@@ -136,11 +162,17 @@ const safeFetch = async (apiCall, key) => {
   }
 };
 
-// ================= FETCH FUNCTIONS =================
+// ================= FETCH =================
 export const fetchSkillsData = () => safeFetch(apiFetchSkills, "skills");
 
+// 🔥 UPDATED EXPERIENCE FETCH WITH FALLBACK
 export const fetchExperiencesData = async () => {
   const data = await safeFetch(apiFetchExperiences, "experiences");
+
+  if (!data || data.length === 0) {
+    console.warn("⚠️ Using default experience data");
+    return defaultExperiences;
+  }
 
   return data.sort(
     (a, b) =>
@@ -148,12 +180,11 @@ export const fetchExperiencesData = async () => {
   );
 };
 
-// 🔥 UPDATED PROJECT FETCH WITH FALLBACK
+// Projects
 export const fetchProjectsData = async () => {
   const data = await safeFetch(apiFetchProjects, "projects");
 
   if (!data || data.length === 0) {
-    console.warn("⚠️ Using default project data");
     return defaultProjects;
   }
 
@@ -165,146 +196,14 @@ export const fetchProfileData = async () => {
   return data || defaultProfile;
 };
 
-export const fetchCertificationsData = () =>
-  safeFetch(apiFetchCertifications, "certifications");
-
-export const fetchRepositoriesData = () =>
-  safeFetch(apiFetchRepositories, "repositories");
-
-export const fetchReportsData = () =>
-  safeFetch(apiFetchReports, "reports");
-
-// ================= ADMIN FUNCTIONS =================
-const updateCacheAfterCRUD = async (fetchFn, key) => {
-  const updated = await fetchFn();
-  cachedData[key] = updated;
-  saveToStorage();
-};
-
-// Skills
-export const createSkill = async (data) => {
-  const res = await apiCreateSkill(data);
-  await updateCacheAfterCRUD(fetchSkillsData, "skills");
-  return res.data;
-};
-
-export const updateSkill = async (id, data) => {
-  const res = await apiUpdateSkill(id, data);
-  await updateCacheAfterCRUD(fetchSkillsData, "skills");
-  return res.data;
-};
-
-export const deleteSkill = async (id) => {
-  const res = await apiDeleteSkill(id);
-  await updateCacheAfterCRUD(fetchSkillsData, "skills");
-  return res.data;
-};
-
-// Experiences
-export const createExperience = async (data) => {
-  const res = await apiCreateExperience(data);
-  await updateCacheAfterCRUD(fetchExperiencesData, "experiences");
-  return res.data;
-};
-
-export const updateExperience = async (id, data) => {
-  const res = await apiUpdateExperience(id, data);
-  await updateCacheAfterCRUD(fetchExperiencesData, "experiences");
-  return res.data;
-};
-
-export const deleteExperience = async (id) => {
-  const res = await apiDeleteExperience(id);
-  await updateCacheAfterCRUD(fetchExperiencesData, "experiences");
-  return res.data;
-};
-
-// Projects
-export const createProject = async (data) => {
-  const res = await apiCreateProject(data);
-  await updateCacheAfterCRUD(fetchProjectsData, "projects");
-  return res.data;
-};
-
-export const updateProject = async (id, data) => {
-  const res = await apiUpdateProject(id, data);
-  await updateCacheAfterCRUD(fetchProjectsData, "projects");
-  return res.data;
-};
-
-export const deleteProject = async (id) => {
-  const res = await apiDeleteProject(id);
-  await updateCacheAfterCRUD(fetchProjectsData, "projects");
-  return res.data;
-};
-
-// Profile
-export const updateProfile = async (data) => {
-  const res = await apiUpdateProfile(data);
-  await updateCacheAfterCRUD(fetchProfileData, "profile");
-  return res.data;
-};
-
-// Certifications
-export const createCertification = async (data) => {
-  const res = await apiCreateCertification(data);
-  await updateCacheAfterCRUD(fetchCertificationsData, "certifications");
-  return res.data;
-};
-
-export const updateCertification = async (id, data) => {
-  const res = await apiUpdateCertification(id, data);
-  await updateCacheAfterCRUD(fetchCertificationsData, "certifications");
-  return res.data;
-};
-
-export const deleteCertification = async (id) => {
-  const res = await apiDeleteCertification(id);
-  await updateCacheAfterCRUD(fetchCertificationsData, "certifications");
-  return res.data;
-};
-
-// Repositories
-export const createRepository = async (data) => {
-  const res = await apiCreateRepository(data);
-  await updateCacheAfterCRUD(fetchRepositoriesData, "repositories");
-  return res.data;
-};
-
-export const updateRepository = async (id, data) => {
-  const res = await apiUpdateRepository(id, data);
-  await updateCacheAfterCRUD(fetchRepositoriesData, "repositories");
-  return res.data;
-};
-
-export const deleteRepository = async (id) => {
-  const res = await apiDeleteRepository(id);
-  await updateCacheAfterCRUD(fetchRepositoriesData, "repositories");
-  return res.data;
-};
-
-// Reports
-export const createReport = async (data) => {
-  const res = await apiCreateReport(data);
-  await updateCacheAfterCRUD(fetchReportsData, "reports");
-  return res.data;
-};
-
-export const updateReport = async (id, data) => {
-  const res = await apiUpdateReport(id, data);
-  await updateCacheAfterCRUD(fetchReportsData, "reports");
-  return res.data;
-};
-
-export const deleteReport = async (id) => {
-  const res = await apiDeleteReport(id);
-  await updateCacheAfterCRUD(fetchReportsData, "reports");
-  return res.data;
-};
-
 // ================= EXPORT =================
 export let skills = cachedData.skills;
-export let experiences = cachedData.experiences;
+
+export let experiences =
+  cachedData.experiences && cachedData.experiences.length > 0
+    ? cachedData.experiences
+    : defaultExperiences;
+
 export let projects =
   cachedData.projects && cachedData.projects.length > 0
     ? cachedData.projects
