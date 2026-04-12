@@ -9,7 +9,7 @@ const ResumePage = () => {
 
   useEffect(() => {
     fetchProfile()
-      .then(res => setProfile(res.data))
+      .then(res => setProfile(res.data || {})) // ✅ ensure object
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -20,7 +20,6 @@ const ResumePage = () => {
     </div>
   );
 
-  // ✅ Correct path – file is in public folder
   const resumeUrl = '/resume.pdf';
 
   return (

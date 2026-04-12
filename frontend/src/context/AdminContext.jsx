@@ -30,8 +30,10 @@ export const AdminProvider = ({ children }) => {
 
     try {
       const res = await adminVerify();
+      // If the request succeeded (status 2xx), consider the user authenticated
       setIsAdmin(true);
-      setAdminData(res.data);
+      // Store any returned data (or null if none)
+      setAdminData(res.data || null);
     } catch (error) {
       console.error('Auth verification failed:', error);
       localStorage.removeItem('admin_token');

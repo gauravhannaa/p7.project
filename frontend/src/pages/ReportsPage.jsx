@@ -14,7 +14,9 @@ const ReportsPage = () => {
     const loadReports = async () => {
       try {
         const res = await fetchReports();
-        setReports(res.data);
+        // ✅ Ensure reports is always an array
+        const data = Array.isArray(res.data) ? res.data : [];
+        setReports(data);
       } catch (err) {
         console.error('Error loading reports:', err);
         setError('Failed to load reports. Please try again later.');
@@ -55,7 +57,6 @@ const ReportsPage = () => {
         {/* Header */}
         <div className="glass-card p-6 rounded-lg border border-green-500/30 mb-8">
           <h1 className="text-4xl font-bold text-green-400 glow-text mb-2">📄 Reports & Certificates</h1>
-          {/* ✅ Fixed: replaced > with {'>'} */}
           <p className="text-gray-400 font-mono">{'>'} Official documents, certifications, and achievements</p>
         </div>
 
@@ -69,7 +70,7 @@ const ReportsPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {reports.map((report, idx) => (
               <motion.div
-                key={report._id}
+                key={report._id || idx}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
