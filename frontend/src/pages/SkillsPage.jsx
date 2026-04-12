@@ -91,7 +91,7 @@ const SkillsPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-black/80 flex items-center justify-center">
-        <div className="text-green-400 text-xl animate-pulse">Loading skills matrix...</div>
+        <div className="text-green-400 text-xl animate-pulse">Loading skills ...</div>
       </div>
     );
   }
@@ -103,7 +103,7 @@ const SkillsPage = () => {
           ← Back to Terminal
         </button>
         <div className="glass-card p-6 border border-green-500/30 mb-8">
-          <h1 className="text-4xl font-bold text-green-400">⚡ Skills Matrix</h1>
+          <h1 className="text-4xl font-bold text-green-400">⚡ Skills </h1>
           <p className="text-gray-400 font-mono">&gt; categorized professional skill inventory</p>
           {error && <p className="text-yellow-400 text-sm mt-2">{error}</p>}
         </div>
