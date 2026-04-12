@@ -1,11 +1,43 @@
 import Layout from "../components/Layout";
 import PageHeader from "../components/PageHeader";
 import ExperienceTimeline from "../components/ExperienceTimeline";
-import { experiences as importedExperiences } from "../data/portfolioData";
+import { useEffect, useState } from "react";
+import { fetchExperiences } from "../api";
+import { experiences as staticExperiences } from "../data/portfolioData";
 
 const ExperiencePage = () => {
-  // Fallback: use empty array if importedExperiences is undefined or not an array
-  const experiences = Array.isArray(importedExperiences) ? importedExperiences : [];
+  const [experiences, setExperiences] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadExperiences = async () => {
+      try {
+        const res = await fetchExperiences();
+        if (res.data && res.data.length > 0) {
+          setExperiences(res.data);
+        } else {
+          // Fallback to static data if API returns empty
+          setExperiences(Array.isArray(staticExperiences) ? staticExperiences : []);
+        }
+      } catch (error) {
+        console.error("Error loading experiences from API, using static fallback", error);
+        setExperiences(Array.isArray(staticExperiences) ? staticExperiences : []);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadExperiences();
+  }, []);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-green-400 text-xl animate-pulse">Loading experience...</div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -16,7 +48,7 @@ const ExperiencePage = () => {
         <h2 className="text-xl font-bold text-neon">
           💼 Experience Overview
         </h2>
-        <p className="text-gray-300 text-sm leading-relaxed">
+        <p className="text-green-400 text-sm leading-relaxed">
           A results-driven Tech Support Engineer and Cyber Security Enthusiast 
           with hands-on experience in system troubleshooting, network security, 
           and infrastructure management. Proven ability to handle critical incidents, 
@@ -27,7 +59,7 @@ const ExperiencePage = () => {
       {/* Timeline */}
       <div className="glass-panel p-6">
         {experiences.length === 0 ? (
-          <p className="text-gray-400 text-center py-4">No experience data available. Use admin dashboard to add.</p>
+          <p className="text-green-400 text-center py-4">No experience data available. Use admin dashboard to add.</p>
         ) : (
           <ExperienceTimeline experiences={experiences} />
         )}
@@ -35,7 +67,7 @@ const ExperiencePage = () => {
 
       {/* Terminal Style Footer */}
       <div className="mt-6 glass-panel p-4">
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-green-400">
           &gt; load --experience --timeline
         </p>
         <p className="text-neon text-sm">

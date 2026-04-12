@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchReports } from '../api';
 import { motion } from 'framer-motion';
 import { FileText, ExternalLink, Download } from 'lucide-react';
+import { reports as staticReports } from '../data/portfolioData';
 
 const ReportsPage = () => {
   const navigate = useNavigate();
@@ -14,12 +15,16 @@ const ReportsPage = () => {
     const loadReports = async () => {
       try {
         const res = await fetchReports();
-        // ✅ Ensure reports is always an array
-        const data = Array.isArray(res.data) ? res.data : [];
-        setReports(data);
+        // Use API data if it's a non-empty array, else fallback to static
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          setReports(res.data);
+        } else {
+          setReports(Array.isArray(staticReports) ? staticReports : []);
+        }
       } catch (err) {
-        console.error('Error loading reports:', err);
-        setError('Failed to load reports. Please try again later.');
+        console.error('Error loading reports from API, using static fallback', err);
+        setReports(Array.isArray(staticReports) ? staticReports : []);
+        setError(null); // Don't show error, just use fallback
       } finally {
         setLoading(false);
       }
@@ -35,7 +40,8 @@ const ReportsPage = () => {
     );
   }
 
-  if (error) {
+  // Only show error if both API and static failed and reports is empty
+  if (error && reports.length === 0) {
     return (
       <div className="min-h-screen bg-black/80 flex items-center justify-center">
         <div className="text-red-400 text-xl">{error}</div>

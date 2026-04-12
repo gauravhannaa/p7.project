@@ -1,9 +1,40 @@
 import Layout from "../components/Layout";
 import PageHeader from "../components/PageHeader";
 import CertificationCard from "../components/CertificationCard";
-import { certifications } from "../data/portfolioData";
+import { useEffect, useState } from "react";
+import { fetchCertifications } from "../api";
+import { certifications as staticCertifications } from "../data/portfolioData";
 
 const CertificationsPage = () => {
+  const [certifications, setCertifications] = useState(staticCertifications);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadCertifications = async () => {
+      try {
+        const res = await fetchCertifications();
+        if (res.data && res.data.length > 0) {
+          setCertifications(res.data);
+        }
+      } catch (error) {
+        console.error("Error loading certifications from API, using static fallback", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadCertifications();
+  }, []);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-green-400 text-xl animate-pulse">Loading certifications...</div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <PageHeader title="Credential Verification Terminal" />
@@ -13,7 +44,7 @@ const CertificationsPage = () => {
         <h2 className="text-xl font-bold text-neon">
           🎓 Certifications & Professional Development
         </h2>
-        <p className="text-gray-300 text-sm leading-relaxed">
+        <p className="text-green-400 text-sm leading-relaxed">
           With a strong commitment to continuous learning and professional growth, 
           I have completed multiple industry-recognized certifications across cyber 
           security, software development, networking, and system technologies. These 
@@ -23,7 +54,7 @@ const CertificationsPage = () => {
       </div>
 
       {/* Certification Highlights (Static Professional Content) */}
-      <div className="glass-panel p-6 space-y-5 mb-6 text-sm text-gray-300">
+      <div className="glass-panel p-6 space-y-5 mb-6 text-sm text-green-400">
 
         <div>
           <h3 className="text-neon font-semibold">🔐 Cyber Security – IBM SkillBuild</h3>
@@ -93,13 +124,13 @@ const CertificationsPage = () => {
       {/* Dynamic Certification Cards */}
       <div className="space-y-4">
         {certifications.map((cert) => (
-          <CertificationCard key={cert.id} cert={cert} />
+          <CertificationCard key={cert._id || cert.id} cert={cert} />
         ))}
       </div>
 
       {/* Verification Section */}
       <div className="mt-6 glass-panel p-4 space-y-2">
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-green-400">
           &gt; verify --cert all_credentials
         </p>
         <p className="text-neon text-sm">

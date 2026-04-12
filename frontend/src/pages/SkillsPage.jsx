@@ -9,8 +9,8 @@ const SkillsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ✅ DEFAULT SKILLS (FALLBACK DATA ADDED)
-  const TechSkills = [
+  // ✅ DEFAULT SKILLS (FALLBACK DATA)
+  const defaultSkills = [
     // Technical
     { name: "Computer Networking (TCP/IP, DNS, DHCP, LAN/WAN)", category: "💻 Technical Skills" },
     { name: "Network Troubleshooting", category: "💻 Technical Skills" },
@@ -24,14 +24,12 @@ const SkillsPage = () => {
     { name: "Digital Forensics (Autopsy, FTK)", category: "💻 Technical Skills" },
     { name: "Basic Cybersecurity", category: "💻 Technical Skills" },
     { name: "System Monitoring", category: "💻 Technical Skills" },
-
     // Networking
     { name: "IP Configuration", category: "🌐 Networking & IT Support" },
     { name: "Router/Switch Basics", category: "🌐 Networking & IT Support" },
     { name: "Network Issue Diagnosis", category: "🌐 Networking & IT Support" },
     { name: "Remote Desktop Support", category: "🌐 Networking & IT Support" },
     { name: "VPN Setup & Troubleshooting", category: "🌐 Networking & IT Support" },
-
     // Tools
     { name: "Windows OS", category: "🛠️ Tools & Platforms" },
     { name: "Linux OS", category: "🛠️ Tools & Platforms" },
@@ -39,14 +37,12 @@ const SkillsPage = () => {
     { name: "Outlook", category: "🛠️ Tools & Platforms" },
     { name: "Service Desk Tools", category: "🛠️ Tools & Platforms" },
     { name: "CRM Systems", category: "🛠️ Tools & Platforms" },
-
     // Cyber
     { name: "Digital Forensics Analysis", category: "🔐 Cybersecurity & Forensics" },
     { name: "Log Analysis", category: "🔐 Cybersecurity & Forensics" },
     { name: "Threat Detection Basics", category: "🔐 Cybersecurity & Forensics" },
     { name: "Data Recovery", category: "🔐 Cybersecurity & Forensics" },
     { name: "Evidence Handling", category: "🔐 Cybersecurity & Forensics" },
-
     // Soft
     { name: "Communication Skills", category: "📊 Soft Skills" },
     { name: "Problem-Solving", category: "📊 Soft Skills" },
@@ -55,7 +51,6 @@ const SkillsPage = () => {
     { name: "Adaptability", category: "📊 Soft Skills" },
     { name: "Customer Handling", category: "📊 Soft Skills" },
     { name: "Analytical Thinking", category: "📊 Soft Skills" },
-
     // Professional
     { name: "Incident Management", category: "🚀 Professional Skills" },
     { name: "Ticket Handling", category: "🚀 Professional Skills" },
@@ -69,15 +64,13 @@ const SkillsPage = () => {
     const loadSkills = async () => {
       try {
         const res = await fetchSkills();
-
-        // 🔥 API fallback logic
-        if (!res.data || res.data.length === 0) {
-          console.warn("⚠️ Using default skills");
-          setSkills(defaultSkills);
-        } else {
+        // ✅ Use API data if available, otherwise fallback to defaultSkills
+        if (res.data && res.data.length > 0) {
           setSkills(res.data);
+        } else {
+          console.warn("⚠️ Using default skills (API returned empty)");
+          setSkills(defaultSkills);
         }
-
       } catch (err) {
         console.error('Error loading skills:', err);
         setError('Failed to load skills. Using fallback data.');
@@ -89,7 +82,7 @@ const SkillsPage = () => {
     loadSkills();
   }, []);
 
-  // Group skills
+  // Group skills by category
   const groupedSkills = skills.reduce((acc, skill) => {
     const category = skill.category || 'Uncategorized';
     if (!acc[category]) acc[category] = [];
@@ -103,7 +96,7 @@ const SkillsPage = () => {
     return (
       <div className="min-h-screen bg-black/80 flex items-center justify-center">
         <div className="text-green-400 text-xl animate-pulse">
-          Loading skills matrix...
+          Loading skills ...
         </div>
       </div>
     );
@@ -122,10 +115,11 @@ const SkillsPage = () => {
 
         {/* Header */}
         <div className="glass-card p-6 border border-green-500/30 mb-8">
-          <h1 className="text-4xl font-bold text-green-400">⚡ Skills Matrix</h1>
+          <h1 className="text-4xl font-bold text-green-400">⚡ Skills </h1>
           <p className="text-gray-400 font-mono">
             &gt; categorized professional skill inventory
           </p>
+          {error && <p className="text-yellow-400 text-sm mt-2">{error}</p>}
         </div>
 
         {/* Skills */}
