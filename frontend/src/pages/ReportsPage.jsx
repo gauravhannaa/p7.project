@@ -55,7 +55,8 @@ const ReportsPage = () => {
         {/* Header */}
         <div className="glass-card p-6 rounded-lg border border-green-500/30 mb-8">
           <h1 className="text-4xl font-bold text-green-400 glow-text mb-2">📄 Reports & Certificates</h1>
-          <p className="text-gray-400 font-mono">> Official documents, certifications, and achievements</p>
+          {/* ✅ Fixed: replaced > with {'>'} */}
+          <p className="text-gray-400 font-mono">{'>'} Official documents, certifications, and achievements</p>
         </div>
 
         {reports.length === 0 ? (

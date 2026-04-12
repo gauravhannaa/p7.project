@@ -5,6 +5,7 @@ import TypewriterText from "../components/TypewriterText";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import { Briefcase } from 'lucide-react';
 import { fetchProfile, fetchSkills } from "../api";
 import { 
   Code, Server, Shield, Terminal, Clock, Activity, 
