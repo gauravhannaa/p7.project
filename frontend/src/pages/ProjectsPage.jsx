@@ -13,14 +13,21 @@ const ProjectsPage = () => {
     const loadProjects = async () => {
       try {
         const res = await fetchProjects();
-        if (res.data && res.data.length > 0) {
-          setProjects(res.data);
-        } else {
-          // Fallback to static data if API returns empty
-          setProjects(staticProjects);
-        }
+        const apiProjects = res.data && res.data.length > 0 ? res.data : [];
+        
+        // Merge static and API projects, avoiding duplicates by title or _id
+        const allProjects = [...staticProjects];
+        apiProjects.forEach(apiProj => {
+          const exists = allProjects.some(p => 
+            p.title === apiProj.title || p._id === apiProj._id
+          );
+          if (!exists) {
+            allProjects.push(apiProj);
+          }
+        });
+        setProjects(allProjects);
       } catch (error) {
-        console.error("Error loading projects from API, using static fallback", error);
+        console.error("Error loading projects from API, using static only", error);
         setProjects(staticProjects);
       } finally {
         setLoading(false);
