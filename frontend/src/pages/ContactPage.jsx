@@ -1,42 +1,35 @@
 import Layout from "../components/Layout";
 import PageHeader from "../components/PageHeader";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail, Linkedin, Instagram, Github, Facebook } from "lucide-react";
-import { profile } from "../data/portfolioData";
+import { submitContact, fetchProfile } from "../api";
 import toast from "react-hot-toast";
-import emailjs from "@emailjs/browser";
 
 const ContactPage = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sending, setSending] = useState(false);
+  const [profileData, setProfileData] = useState({});
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    fetchProfile()
+      .then(res => setProfileData(res.data))
+      .catch(console.error);
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSending(true);
 
-    const templateParams = {
-      from_name: form.name,
-      from_email: form.email,
-      message: form.message,
-    };
-
-    emailjs
-      .send(
-        "service_96mo2rg",     // 🔁 replace
-        "template_xaxk7n4",    // 🔁 replace
-        templateParams,
-        "xRSHmJS6DVtKJLu2e"      // 🔁 replace
-      )
-      .then(() => {
-        toast.success("🔐 Message transmitted securely!");
-        setForm({ name: "", email: "", message: "" });
-      })
-      .catch(() => {
-        toast.error("❌ Transmission failed!");
-      })
-      .finally(() => {
-        setSending(false);
-      });
+    try {
+      await submitContact(form);
+      toast.success("🔐 Message transmitted securely!");
+      setForm({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error(error);
+      toast.error("❌ Transmission failed! Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -52,7 +45,6 @@ const ContactPage = () => {
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-
             <input
               type="text"
               placeholder="Enter your identity..."
@@ -61,7 +53,6 @@ const ContactPage = () => {
               className="w-full bg-black/50 border border-neon/30 rounded px-3 py-2 text-white"
               required
             />
-
             <input
               type="email"
               placeholder="Secure email address..."
@@ -70,7 +61,6 @@ const ContactPage = () => {
               className="w-full bg-black/50 border border-neon/30 rounded px-3 py-2 text-white"
               required
             />
-
             <textarea
               rows="4"
               placeholder="Transmit your message..."
@@ -78,8 +68,7 @@ const ContactPage = () => {
               onChange={(e) => setForm({ ...form, message: e.target.value })}
               className="w-full bg-black/50 border border-neon/30 rounded px-3 py-2 text-white"
               required
-            ></textarea>
-
+            />
             <button
               type="submit"
               disabled={sending}
@@ -87,7 +76,6 @@ const ContactPage = () => {
             >
               {sending ? "Encrypting & Sending..." : "Send Secure Message"}
             </button>
-
           </form>
         </div>
 
@@ -98,41 +86,36 @@ const ContactPage = () => {
           </h2>
 
           <div className="space-y-3">
-
             <a
-              href={`mailto:${profile.email}`}
+              href={`mailto:${profileData.email || "gauravhanna2003@gmail.com"}`}
               className="flex items-center gap-3 text-gray-300 hover:text-neon"
             >
-              <Mail size={18} /> {profile.email}
+              <Mail size={18} /> {profileData.email || "gauravhanna2003@gmail.com"}
             </a>
-
             <a
-              href={profile.github}
+              href={profileData.github || "#"}
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-3 text-gray-300 hover:text-neon"
             >
               <Github size={18} /> GitHub
             </a>
-
             <a
-              href={profile.linkedin}
+              href={profileData.linkedin || "#"}
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-3 text-gray-300 hover:text-neon"
             >
               <Linkedin size={18} /> LinkedIn
             </a>
-
             <a
-              href={profile.instagram}
+              href={profileData.instagram || "#"}
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-3 text-gray-300 hover:text-neon"
             >
               <Instagram size={18} /> Instagram
             </a>
-
             <a
               href="https://www.facebook.com/Gauravhanna"
               target="_blank"
@@ -141,10 +124,8 @@ const ContactPage = () => {
             >
               <Facebook size={18} /> Facebook
             </a>
-
           </div>
         </div>
-
       </div>
     </Layout>
   );
