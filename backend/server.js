@@ -96,22 +96,60 @@ async function seedResumeData() {
       console.log("✅ Seeded experience data from resume");
     }
 
-    // ----- SKILLS -----
+    // ----- SKILLS (Full static table) -----
     const skillCount = await Skill.countDocuments();
     if (skillCount === 0) {
-      await Skill.insertMany([
-        { name: "Windows 10/11 Troubleshooting", percentage: 85, category: "Technical" },
-        { name: "Linux", percentage: 70, category: "Technical" },
-        { name: "Customer & Technical Support (L1/L2)", percentage: 90, category: "Support" },
-        { name: "Networking (TCP/IP, DNS, DHCP, VPN)", percentage: 75, category: "Networking" },
-        { name: "Python", percentage: 65, category: "Programming" },
-        { name: "SQL", percentage: 70, category: "Database" },
-        { name: "MS Office & Outlook", percentage: 85, category: "Productivity" },
-        { name: "Ticketing & CRM Tools", percentage: 80, category: "Tools" },
-        { name: "AWS", percentage: 60, category: "Cloud" },
-        { name: "Docker", percentage: 55, category: "Container" }
-      ]);
-      console.log("✅ Seeded skills from resume");
+      const allSkills = [
+        // 💻 Technical Skills
+        { name: "Computer Networking (TCP/IP, DNS, DHCP, LAN/WAN)", percentage: 85, category: "💻 Technical Skills" },
+        { name: "Network Troubleshooting", percentage: 80, category: "💻 Technical Skills" },
+        { name: "Desktop & Hardware Troubleshooting", percentage: 90, category: "💻 Technical Skills" },
+        { name: "Windows 10/11 Troubleshooting", percentage: 85, category: "💻 Technical Skills" },
+        { name: "Linux Basics", percentage: 70, category: "💻 Technical Skills" },
+        { name: "MS Office & Outlook", percentage: 85, category: "💻 Technical Skills" },
+        { name: "Ticketing & CRM Tools (ServiceNow, Freshdesk)", percentage: 80, category: "💻 Technical Skills" },
+        { name: "Python Programming", percentage: 65, category: "💻 Technical Skills" },
+        { name: "SQL (Database Queries)", percentage: 70, category: "💻 Technical Skills" },
+        { name: "Digital Forensics (Autopsy, FTK)", percentage: 60, category: "💻 Technical Skills" },
+        { name: "Basic Cybersecurity", percentage: 75, category: "💻 Technical Skills" },
+        { name: "System Monitoring", percentage: 70, category: "💻 Technical Skills" },
+        // 🌐 Networking & IT Support
+        { name: "IP Configuration", percentage: 80, category: "🌐 Networking & IT Support" },
+        { name: "Router/Switch Basics", percentage: 75, category: "🌐 Networking & IT Support" },
+        { name: "Network Issue Diagnosis", percentage: 85, category: "🌐 Networking & IT Support" },
+        { name: "Remote Desktop Support", percentage: 90, category: "🌐 Networking & IT Support" },
+        { name: "VPN Setup & Troubleshooting", percentage: 80, category: "🌐 Networking & IT Support" },
+        // 🛠️ Tools & Platforms
+        { name: "Windows OS", percentage: 90, category: "🛠️ Tools & Platforms" },
+        { name: "Linux OS", percentage: 75, category: "🛠️ Tools & Platforms" },
+        { name: "Microsoft Office Suite", percentage: 85, category: "🛠️ Tools & Platforms" },
+        { name: "Outlook", percentage: 85, category: "🛠️ Tools & Platforms" },
+        { name: "Service Desk Tools", percentage: 80, category: "🛠️ Tools & Platforms" },
+        { name: "CRM Systems", percentage: 75, category: "🛠️ Tools & Platforms" },
+        // 🔐 Cybersecurity & Forensics
+        { name: "Digital Forensics Analysis", percentage: 60, category: "🔐 Cybersecurity & Forensics" },
+        { name: "Log Analysis", percentage: 65, category: "🔐 Cybersecurity & Forensics" },
+        { name: "Threat Detection Basics", percentage: 70, category: "🔐 Cybersecurity & Forensics" },
+        { name: "Data Recovery", percentage: 55, category: "🔐 Cybersecurity & Forensics" },
+        { name: "Evidence Handling", percentage: 60, category: "🔐 Cybersecurity & Forensics" },
+        // 📊 Soft Skills
+        { name: "Communication Skills", percentage: 90, category: "📊 Soft Skills" },
+        { name: "Problem-Solving", percentage: 85, category: "📊 Soft Skills" },
+        { name: "Teamwork", percentage: 85, category: "📊 Soft Skills" },
+        { name: "Time Management", percentage: 80, category: "📊 Soft Skills" },
+        { name: "Adaptability", percentage: 85, category: "📊 Soft Skills" },
+        { name: "Customer Handling", percentage: 95, category: "📊 Soft Skills" },
+        { name: "Analytical Thinking", percentage: 80, category: "📊 Soft Skills" },
+        // 🚀 Professional Skills
+        { name: "Incident Management", percentage: 80, category: "🚀 Professional Skills" },
+        { name: "Ticket Handling", percentage: 85, category: "🚀 Professional Skills" },
+        { name: "Documentation", percentage: 80, category: "🚀 Professional Skills" },
+        { name: "Technical Support", percentage: 90, category: "🚀 Professional Skills" },
+        { name: "Troubleshooting Approach", percentage: 90, category: "🚀 Professional Skills" },
+        { name: "Quick Learning Ability", percentage: 85, category: "🚀 Professional Skills" },
+      ];
+      await Skill.insertMany(allSkills);
+      console.log(`✅ Seeded ${allSkills.length} skills from full table`);
     }
 
     // ----- REPORTS (Certificates) -----

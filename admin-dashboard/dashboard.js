@@ -41,6 +41,22 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
+// ==================== LOADING INDICATOR ====================
+function showLoading(containerId, show = true) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    if (show) {
+        const loader = document.createElement('div');
+        loader.id = 'loader-overlay';
+        loader.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
+        loader.innerHTML = '<div class="w-10 h-10 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>';
+        document.body.appendChild(loader);
+    } else {
+        const loader = document.getElementById('loader-overlay');
+        if (loader) loader.remove();
+    }
+}
+
 // ==================== SECTION MANAGEMENT ====================
 function showSection(section) {
     document.querySelectorAll('.section').forEach(el => el.classList.add('hidden'));
@@ -90,6 +106,7 @@ async function loadProfile() {
 
 document.getElementById('profileForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    showLoading(null, true);
     const data = {
         name: document.getElementById('profileName').value,
         title: document.getElementById('profileTitle').value,
@@ -102,6 +119,7 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
         instagram: document.getElementById('profileInstagram').value
     };
     const res = await fetchWithAuth('/profile', { method: 'PUT', body: JSON.stringify(data) });
+    showLoading(null, false);
     if (res.ok) {
         const msg = document.getElementById('profileMessage');
         msg.textContent = '✅ Profile updated successfully!';
@@ -124,6 +142,7 @@ document.getElementById('uploadPhotoBtn')?.addEventListener('click', async () =>
     reader.onloadend = async () => {
         const base64String = reader.result;
         try {
+            showLoading(null, true);
             const res = await fetch(`${API_URL}/upload/profile-base64`, {
                 method: 'POST',
                 headers: { 
@@ -132,6 +151,7 @@ document.getElementById('uploadPhotoBtn')?.addEventListener('click', async () =>
                 },
                 body: JSON.stringify({ imageBase64: base64String })
             });
+            showLoading(null, false);
             if (res.ok) {
                 showToast('Photo uploaded successfully!', 'success');
                 loadProfile();
@@ -141,6 +161,7 @@ document.getElementById('uploadPhotoBtn')?.addEventListener('click', async () =>
                 showToast('Upload failed: ' + (err.message || 'Unknown error'), 'error');
             }
         } catch (err) {
+            showLoading(null, false);
             showToast('Upload failed: ' + err.message, 'error');
         }
     };
@@ -164,21 +185,22 @@ async function loadSkills() {
                 <span class="ml-2 text-xs text-green-600">${skill.category || 'Technical'}</span>
             </div>
             <div class="flex gap-3">
-                <button onclick="editSkill('${skill._id}', '${escapeHtml(skill.name)}', ${skill.percentage})" class="text-green-400 hover:text-green-300 transition">✏️ Edit</button>
+                <button onclick="editSkill('${skill._id}', '${escapeHtml(skill.name)}', ${skill.percentage}, '${escapeHtml(skill.category || 'Technical')}')" class="text-green-400 hover:text-green-300 transition">✏️ Edit</button>
                 <button onclick="deleteSkill('${skill._id}')" class="text-red-500 hover:text-red-400 transition">🗑️ Delete</button>
             </div>
         </div>
     `).join('');
 }
 
-window.editSkill = (id, name, percent) => {
-    const newName = prompt('Enter new skill name:', name);
+window.editSkill = (id, oldName, oldPercent, oldCategory) => {
+    const newName = prompt('Enter new skill name:', oldName);
     if (newName && newName.trim()) {
-        const newPercent = prompt('Enter new percentage (0-100):', percent);
+        const newPercent = prompt('Enter new percentage (0-100):', oldPercent);
         if (newPercent && !isNaN(newPercent)) {
+            const newCategory = prompt('Enter category (e.g., Technical, Soft Skills, Security):', oldCategory);
             fetchWithAuth(`/skills/${id}`, { 
                 method: 'PUT', 
-                body: JSON.stringify({ name: newName, percentage: parseInt(newPercent) }) 
+                body: JSON.stringify({ name: newName, percentage: parseInt(newPercent), category: newCategory || 'Technical' }) 
             }).then(() => {
                 loadSkills();
                 showToast('Skill updated!', 'success');
@@ -199,7 +221,8 @@ document.getElementById('skillForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = { 
         name: document.getElementById('skillName').value, 
-        percentage: parseInt(document.getElementById('skillPercent').value)
+        percentage: parseInt(document.getElementById('skillPercent').value),
+        category: document.getElementById('skillCategory')?.value || 'Technical'
     };
     await fetchWithAuth('/skills', { method: 'POST', body: JSON.stringify(data) });
     loadSkills();

@@ -150,6 +150,8 @@
                     <option value="Programming">Programming</option>
                     <option value="Cloud">Cloud</option>
                     <option value="Container">Container</option>
+                    <option value="Security">Security</option>
+                    <option value="Soft Skills">Soft Skills</option>
                 </select>
             </div>
             <button type="submit" class="mt-3 px-4 py-1 btn-neon rounded">➕ Add Skill</button>
@@ -426,8 +428,15 @@ async function loadSkills() {
         }
         container.innerHTML = skills.map(skill => `
             <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
-                <div><span class="font-bold text-green-400">${escapeHtml(skill.name)}</span><span class="ml-3 text-green-500">${skill.percentage}%</span></div>
-                <div class="flex gap-3"><button onclick="editSkill('${skill._id}', '${escapeHtml(skill.name)}', ${skill.percentage})" class="text-blue-400">✏️ Edit</button><button onclick="deleteSkill('${skill._id}')" class="text-red-400">🗑️ Delete</button></div>
+                <div>
+                    <span class="font-bold text-green-400">${escapeHtml(skill.name)}</span>
+                    <span class="ml-3 text-green-500">${skill.percentage}%</span>
+                    <span class="ml-2 text-xs text-gray-400">${escapeHtml(skill.category || 'Technical')}</span>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="editSkill('${skill._id}', '${escapeHtml(skill.name)}', ${skill.percentage}, '${escapeHtml(skill.category || 'Technical')}')" class="text-blue-400">✏️ Edit</button>
+                    <button onclick="deleteSkill('${skill._id}')" class="text-red-400">🗑️ Delete</button>
+                </div>
             </div>
         `).join('');
     } catch (error) {
@@ -436,13 +445,16 @@ async function loadSkills() {
     }
 }
 
-window.editSkill = (id, name, percent) => {
+window.editSkill = (id, name, percent, category) => {
     const newName = prompt('Enter new skill name:', name);
     if (newName && newName.trim()) {
         const newPercent = prompt('Enter new percentage (0-100):', percent);
         if (newPercent && !isNaN(newPercent)) {
-            fetchWithAuth(`/skills/${id}`, { method: 'PUT', body: JSON.stringify({ name: newName, percentage: parseInt(newPercent) }) })
-                .then(() => { loadSkills(); showToast('Skill updated!', 'success'); });
+            const newCategory = prompt('Enter category:', category);
+            fetchWithAuth(`/skills/${id}`, { 
+                method: 'PUT', 
+                body: JSON.stringify({ name: newName, percentage: parseInt(newPercent), category: newCategory || 'Technical' }) 
+            }).then(() => { loadSkills(); showToast('Skill updated!', 'success'); });
         }
     }
 };
@@ -482,11 +494,18 @@ async function loadProjects() {
             <div class="bg-black/50 border border-green-500/30 rounded-lg p-4">
                 <h3 class="text-xl font-bold text-green-400">${escapeHtml(proj.title)}</h3>
                 <p class="text-gray-400 text-sm mt-1">${escapeHtml(proj.description || '')}</p>
-                <div class="flex gap-3 mt-3 pt-3 border-t border-green-500/20"><button onclick="editProject('${proj._id}')" class="text-blue-400 text-sm">✏️ Edit</button><button onclick="deleteProject('${proj._id}')" class="text-red-400 text-sm">🗑️ Delete</button></div>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    ${proj.technologies ? proj.technologies.map(t => `<span class="text-xs px-2 py-0.5 bg-green-900 text-green-300 rounded">${escapeHtml(t)}</span>`).join('') : ''}
+                </div>
+                <div class="flex gap-3 mt-3 pt-3 border-t border-green-500/20">
+                    <button onclick="editProject('${proj._id}')" class="text-blue-400 text-sm">✏️ Edit</button>
+                    <button onclick="deleteProject('${proj._id}')" class="text-red-400 text-sm">🗑️ Delete</button>
+                </div>
             </div>
         `).join('');
     } catch (error) {
         console.error('Load projects error:', error);
+        showToast('Error loading projects', 'error');
     }
 }
 
@@ -495,7 +514,12 @@ window.editProject = async (id) => {
     const proj = await res.json();
     const newTitle = prompt('New title:', proj.title);
     if (newTitle) {
-        await fetchWithAuth(`/projects/${id}`, { method: 'PUT', body: JSON.stringify({ ...proj, title: newTitle }) });
+        const newDesc = prompt('New description:', proj.description);
+        const newTech = prompt('Technologies (comma separated):', proj.technologies ? proj.technologies.join(',') : '');
+        await fetchWithAuth(`/projects/${id}`, { 
+            method: 'PUT', 
+            body: JSON.stringify({ ...proj, title: newTitle, description: newDesc, technologies: newTech ? newTech.split(',').map(t => t.trim()) : [] }) 
+        });
         loadProjects();
         showToast('Project updated!', 'success');
     }
@@ -512,7 +536,14 @@ window.deleteProject = async (id) => {
 document.getElementById('projectForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const tech = document.getElementById('projectTech').value.split(',').map(s => s.trim()).filter(Boolean);
-    const data = { title: document.getElementById('projectTitle').value, description: document.getElementById('projectDesc').value, technologies: tech, demoLink: document.getElementById('projectDemo').value, githubLink: document.getElementById('projectGithub').value, status: document.getElementById('projectStatus').value };
+    const data = { 
+        title: document.getElementById('projectTitle').value, 
+        description: document.getElementById('projectDesc').value, 
+        technologies: tech, 
+        demoLink: document.getElementById('projectDemo').value, 
+        githubLink: document.getElementById('projectGithub').value, 
+        status: document.getElementById('projectStatus').value 
+    };
     await fetchWithAuth('/projects', { method: 'POST', body: JSON.stringify(data) });
     loadProjects();
     e.target.reset();
@@ -532,13 +563,23 @@ async function loadExperience() {
         container.innerHTML = experiences.map(exp => `
             <div class="bg-black/50 border border-green-500/30 rounded-lg p-4">
                 <div class="flex justify-between items-start flex-wrap gap-2">
-                    <div><h3 class="text-xl font-bold text-green-400">${escapeHtml(exp.role)} @ ${escapeHtml(exp.company)}</h3><p class="text-gray-400 text-sm">${exp.startDate} - ${exp.isCurrent ? 'Present' : (exp.endDate || 'N/A')}</p></div>
-                    <div class="flex gap-2"><button onclick="editExperience('${exp._id}')" class="text-blue-400">✏️ Edit</button><button onclick="deleteExperience('${exp._id}')" class="text-red-400">🗑️ Delete</button></div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-400">${escapeHtml(exp.role)} @ ${escapeHtml(exp.company)}</h3>
+                        <p class="text-gray-400 text-sm">${exp.startDate} - ${exp.isCurrent ? 'Present' : (exp.endDate || 'N/A')}</p>
+                        <ul class="list-disc list-inside mt-2 text-sm text-gray-400">
+                            ${exp.responsibilities ? exp.responsibilities.map(r => `<li>${escapeHtml(r)}</li>`).join('') : '<li>No responsibilities listed</li>'}
+                        </ul>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editExperience('${exp._id}')" class="text-blue-400">✏️ Edit</button>
+                        <button onclick="deleteExperience('${exp._id}')" class="text-red-400">🗑️ Delete</button>
+                    </div>
                 </div>
             </div>
         `).join('');
     } catch (error) {
         console.error('Load experience error:', error);
+        showToast('Error loading experience', 'error');
     }
 }
 
@@ -547,7 +588,14 @@ window.editExperience = async (id) => {
     const exp = await res.json();
     const newRole = prompt('New role:', exp.role);
     if (newRole) {
-        await fetchWithAuth(`/experiences/${id}`, { method: 'PUT', body: JSON.stringify({ ...exp, role: newRole }) });
+        const newCompany = prompt('New company:', exp.company);
+        const newStart = prompt('New start date:', exp.startDate);
+        const newEnd = prompt('New end date (leave blank if current):', exp.endDate || '');
+        const newIsCurrent = confirm('Currently working here?');
+        await fetchWithAuth(`/experiences/${id}`, { 
+            method: 'PUT', 
+            body: JSON.stringify({ ...exp, role: newRole, company: newCompany, startDate: newStart, endDate: newEnd || undefined, isCurrent: newIsCurrent }) 
+        });
         loadExperience();
         showToast('Experience updated!', 'success');
     }
@@ -564,7 +612,14 @@ window.deleteExperience = async (id) => {
 document.getElementById('experienceForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const responsibilities = document.getElementById('expResponsibilities').value.split('\n').filter(r => r.trim());
-    const data = { company: document.getElementById('expCompany').value, role: document.getElementById('expRole').value, startDate: document.getElementById('expStartDate').value, endDate: document.getElementById('expEndDate').value || undefined, isCurrent: document.getElementById('expCurrent').checked, responsibilities };
+    const data = { 
+        company: document.getElementById('expCompany').value, 
+        role: document.getElementById('expRole').value, 
+        startDate: document.getElementById('expStartDate').value, 
+        endDate: document.getElementById('expEndDate').value || undefined, 
+        isCurrent: document.getElementById('expCurrent').checked, 
+        responsibilities 
+    };
     await fetchWithAuth('/experiences', { method: 'POST', body: JSON.stringify(data) });
     loadExperience();
     e.target.reset();
@@ -583,12 +638,20 @@ async function loadCertifications() {
         }
         container.innerHTML = certs.map(c => `
             <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
-                <div><span class="font-bold text-green-400">${escapeHtml(c.title)}</span><span class="ml-2 text-sm text-gray-400">– ${escapeHtml(c.issuer)} (${c.date})</span></div>
-                <div class="flex gap-2"><button onclick="editCert('${c._id}')" class="text-blue-400">✏️ Edit</button><button onclick="deleteCert('${c._id}')" class="text-red-400">🗑️ Delete</button></div>
+                <div>
+                    <span class="font-bold text-green-400">${escapeHtml(c.title)}</span>
+                    <span class="ml-2 text-sm text-gray-400">– ${escapeHtml(c.issuer)} (${c.date})</span>
+                    ${c.credentialId ? `<br><span class="text-xs text-gray-500">ID: ${escapeHtml(c.credentialId)}</span>` : ''}
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="editCert('${c._id}')" class="text-blue-400">✏️ Edit</button>
+                    <button onclick="deleteCert('${c._id}')" class="text-red-400">🗑️ Delete</button>
+                </div>
             </div>
         `).join('');
     } catch (error) {
         console.error('Load certifications error:', error);
+        showToast('Error loading certifications', 'error');
     }
 }
 
@@ -597,7 +660,12 @@ window.editCert = async (id) => {
     const cert = await res.json();
     const newTitle = prompt('New title:', cert.title);
     if (newTitle) {
-        await fetchWithAuth(`/certifications/${id}`, { method: 'PUT', body: JSON.stringify({ ...cert, title: newTitle }) });
+        const newIssuer = prompt('New issuer:', cert.issuer);
+        const newDate = prompt('New date:', cert.date);
+        await fetchWithAuth(`/certifications/${id}`, { 
+            method: 'PUT', 
+            body: JSON.stringify({ ...cert, title: newTitle, issuer: newIssuer, date: newDate }) 
+        });
         loadCertifications();
         showToast('Certification updated!', 'success');
     }
@@ -613,7 +681,13 @@ window.deleteCert = async (id) => {
 
 document.getElementById('certForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const data = { title: document.getElementById('certTitle').value, issuer: document.getElementById('certIssuer').value, date: document.getElementById('certDate').value, credentialId: document.getElementById('certId').value, verifyUrl: document.getElementById('certUrl').value };
+    const data = { 
+        title: document.getElementById('certTitle').value, 
+        issuer: document.getElementById('certIssuer').value, 
+        date: document.getElementById('certDate').value, 
+        credentialId: document.getElementById('certId').value, 
+        verifyUrl: document.getElementById('certUrl').value 
+    };
     await fetchWithAuth('/certifications', { method: 'POST', body: JSON.stringify(data) });
     loadCertifications();
     e.target.reset();
@@ -632,12 +706,23 @@ async function loadRepositories() {
         }
         container.innerHTML = repos.map(r => `
             <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
-                <div><span class="font-bold text-green-400">${escapeHtml(r.name)}</span><span class="ml-2 text-xs text-gray-500">${r.language || 'N/A'}</span><div class="flex gap-3 mt-1 text-xs text-gray-500"><span>⭐ ${r.stars || 0}</span><span>🍴 ${r.forks || 0}</span></div></div>
-                <div class="flex gap-2"><button onclick="editRepo('${r._id}')" class="text-blue-400">✏️ Edit</button><button onclick="deleteRepo('${r._id}')" class="text-red-400">🗑️ Delete</button></div>
+                <div>
+                    <span class="font-bold text-green-400">${escapeHtml(r.name)}</span>
+                    <span class="ml-2 text-xs text-gray-500">${r.language || 'N/A'}</span>
+                    <div class="flex gap-3 mt-1 text-xs text-gray-500">
+                        <span>⭐ ${r.stars || 0}</span>
+                        <span>🍴 ${r.forks || 0}</span>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="editRepo('${r._id}')" class="text-blue-400">✏️ Edit</button>
+                    <button onclick="deleteRepo('${r._id}')" class="text-red-400">🗑️ Delete</button>
+                </div>
             </div>
         `).join('');
     } catch (error) {
         console.error('Load repositories error:', error);
+        showToast('Error loading repositories', 'error');
     }
 }
 
@@ -646,7 +731,11 @@ window.editRepo = async (id) => {
     const repo = await res.json();
     const newName = prompt('New repository name:', repo.name);
     if (newName) {
-        await fetchWithAuth(`/repositories/${id}`, { method: 'PUT', body: JSON.stringify({ ...repo, name: newName }) });
+        const newDesc = prompt('New description:', repo.description);
+        await fetchWithAuth(`/repositories/${id}`, { 
+            method: 'PUT', 
+            body: JSON.stringify({ ...repo, name: newName, description: newDesc }) 
+        });
         loadRepositories();
         showToast('Repository updated!', 'success');
     }
@@ -662,7 +751,15 @@ window.deleteRepo = async (id) => {
 
 document.getElementById('repoForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const data = { name: document.getElementById('repoName').value, description: document.getElementById('repoDesc').value, language: document.getElementById('repoLang').value, stars: parseInt(document.getElementById('repoStars').value) || 0, forks: parseInt(document.getElementById('repoForks').value) || 0, updated: document.getElementById('repoUpdated').value, url: document.getElementById('repoUrl').value };
+    const data = { 
+        name: document.getElementById('repoName').value, 
+        description: document.getElementById('repoDesc').value, 
+        language: document.getElementById('repoLang').value, 
+        stars: parseInt(document.getElementById('repoStars').value) || 0, 
+        forks: parseInt(document.getElementById('repoForks').value) || 0, 
+        updated: document.getElementById('repoUpdated').value, 
+        url: document.getElementById('repoUrl').value 
+    };
     await fetchWithAuth('/repositories', { method: 'POST', body: JSON.stringify(data) });
     loadRepositories();
     e.target.reset();
@@ -681,12 +778,19 @@ async function loadReports() {
         }
         container.innerHTML = reports.map(r => `
             <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
-                <div><span class="font-bold text-green-400">${escapeHtml(r.title)}</span>${r.description ? `<br><span class="text-sm text-gray-400">${escapeHtml(r.description)}</span>` : ''}</div>
-                <div class="flex gap-2"><button onclick="editReport('${r._id}')" class="text-blue-400">✏️ Edit</button><button onclick="deleteReport('${r._id}')" class="text-red-400">🗑️ Delete</button></div>
+                <div>
+                    <span class="font-bold text-green-400">${escapeHtml(r.title)}</span>
+                    ${r.description ? `<br><span class="text-sm text-gray-400">${escapeHtml(r.description)}</span>` : ''}
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="editReport('${r._id}')" class="text-blue-400">✏️ Edit</button>
+                    <button onclick="deleteReport('${r._id}')" class="text-red-400">🗑️ Delete</button>
+                </div>
             </div>
         `).join('');
     } catch (error) {
         console.error('Load reports error:', error);
+        showToast('Error loading reports', 'error');
     }
 }
 
@@ -695,7 +799,11 @@ window.editReport = async (id) => {
     const report = await res.json();
     const newTitle = prompt('New title:', report.title);
     if (newTitle) {
-        await fetchWithAuth(`/reports/${id}`, { method: 'PUT', body: JSON.stringify({ ...report, title: newTitle }) });
+        const newDesc = prompt('New description:', report.description);
+        await fetchWithAuth(`/reports/${id}`, { 
+            method: 'PUT', 
+            body: JSON.stringify({ ...report, title: newTitle, description: newDesc }) 
+        });
         loadReports();
         showToast('Report updated!', 'success');
     }
@@ -711,7 +819,11 @@ window.deleteReport = async (id) => {
 
 document.getElementById('reportForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const data = { title: document.getElementById('reportTitle').value, description: document.getElementById('reportDesc').value, pdfUrl: document.getElementById('reportUrl').value };
+    const data = { 
+        title: document.getElementById('reportTitle').value, 
+        description: document.getElementById('reportDesc').value, 
+        pdfUrl: document.getElementById('reportUrl').value 
+    };
     await fetchWithAuth('/reports', { method: 'POST', body: JSON.stringify(data) });
     loadReports();
     e.target.reset();
@@ -731,13 +843,19 @@ async function loadContacts() {
         container.innerHTML = contacts.map(c => `
             <div class="bg-black/50 border border-green-500/30 rounded-lg p-4">
                 <div class="flex justify-between items-start">
-                    <div><p class="font-bold text-green-400">${escapeHtml(c.name)}</p><p class="text-sm text-gray-400">📧 ${escapeHtml(c.email)}</p><p class="text-sm text-gray-300 mt-2">${escapeHtml(c.message)}</p><p class="text-xs text-gray-500 mt-2">📅 ${new Date(c.createdAt).toLocaleString()}</p></div>
+                    <div>
+                        <p class="font-bold text-green-400">${escapeHtml(c.name)}</p>
+                        <p class="text-sm text-gray-400">📧 ${escapeHtml(c.email)}</p>
+                        <p class="text-sm text-gray-300 mt-2">${escapeHtml(c.message)}</p>
+                        <p class="text-xs text-gray-500 mt-2">📅 ${new Date(c.createdAt).toLocaleString()}</p>
+                    </div>
                     <button onclick="deleteContact('${c._id}')" class="text-red-400">🗑️ Delete</button>
                 </div>
             </div>
         `).join('');
     } catch (error) {
         console.error('Load contacts error:', error);
+        showToast('Error loading contacts', 'error');
     }
 }
 
