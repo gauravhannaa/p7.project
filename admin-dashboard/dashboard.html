@@ -9,20 +9,23 @@
         body {
             background: radial-gradient(circle at center, #0a0a0a 0%, #000000 100%);
             font-family: 'Courier New', monospace;
+            color: #ffffff; /* default text white */
         }
         .glass-panel {
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 255, 65, 0.3);
+            border: 1px solid rgba(0, 255, 65, 0.4);
             border-radius: 12px;
         }
         .btn-neon {
             border: 1px solid #00ff41;
+            color: #00ff41;
             transition: all 0.3s;
         }
         .btn-neon:hover {
             background: rgba(0, 255, 65, 0.2);
             box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+            color: #00ff41;
         }
         .section {
             animation: fadeIn 0.3s ease-in;
@@ -34,7 +37,7 @@
         .hidden { display: none; }
         input, textarea, select {
             background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(0, 255, 65, 0.3);
+            border: 1px solid rgba(0, 255, 65, 0.4);
             color: #00ff41;
             padding: 8px 12px;
             border-radius: 6px;
@@ -45,6 +48,9 @@
             border-color: #00ff41;
             box-shadow: 0 0 5px rgba(0, 255, 65, 0.3);
         }
+        label {
+            color: #ffffff;
+        }
         .status-badge {
             display: inline-block;
             padding: 2px 8px;
@@ -52,6 +58,7 @@
             font-size: 10px;
             background: rgba(0, 255, 65, 0.2);
             border: 1px solid rgba(0, 255, 65, 0.5);
+            color: #00ff41;
         }
         .toast {
             position: fixed;
@@ -62,12 +69,38 @@
             padding: 12px 20px;
             border-radius: 8px;
         }
+        .toast.success {
+            background: #00ff41;
+            color: #000000;
+        }
+        .toast.error {
+            background: #ff4444;
+            color: #ffffff;
+        }
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
         button {
             cursor: pointer;
+        }
+        h1, h2, h3, h4, p, span, div {
+            color: #ffffff; /* ensure all text is white unless specified otherwise */
+        }
+        .text-green-400, .text-green-500, .text-green-600, .text-green-300, .text-green-200 {
+            color: #00ff41 !important;
+        }
+        .text-gray-400, .text-gray-500, .text-gray-300, .text-gray-200 {
+            color: #cccccc !important;
+        }
+        .border-green-500, .border-green-600, .border-green-400 {
+            border-color: #00ff41 !important;
+        }
+        .bg-green-500\/20, .bg-green-500\/30 {
+            background: rgba(0, 255, 65, 0.2) !important;
+        }
+        .bg-black\/50 {
+            background: rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
@@ -82,7 +115,7 @@
                     ⚙️ ADMIN DASHBOARD
                     <span class="text-xs ml-2 status-badge">SECURE TERMINAL</span>
                 </h1>
-                <p class="text-sm text-gray-400 mt-1">&gt; Cyber Portfolio Management System v2.0</p>
+                <p class="text-sm text-gray-300 mt-1">&gt; Cyber Portfolio Management System v2.0</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="refreshCurrentSection()" class="px-4 py-2 btn-neon rounded flex items-center gap-2">
@@ -109,21 +142,21 @@
 
     <!-- PROFILE SECTION -->
     <div id="profileSection" class="section glass-panel p-6 hidden">
-        <h2 class="text-2xl font-bold mb-4">👤 Profile Configuration</h2>
-        <div id="profileMessage" class="hidden bg-green-500/20 border border-green-500 rounded p-2 mb-4 text-center"></div>
+        <h2 class="text-2xl font-bold mb-4 text-green-400">👤 Profile Configuration</h2>
+        <div id="profileMessage" class="hidden bg-green-500/20 border border-green-500 rounded p-2 mb-4 text-center text-white"></div>
         <form id="profileForm" class="space-y-4">
             <div class="grid md:grid-cols-2 gap-4">
-                <div><label class="block text-sm mb-1">Name</label><input type="text" id="profileName" class="w-full"></div>
-                <div><label class="block text-sm mb-1">Title/Role</label><input type="text" id="profileTitle" class="w-full"></div>
-                <div><label class="block text-sm mb-1">Email</label><input type="email" id="profileEmail" class="w-full"></div>
-                <div><label class="block text-sm mb-1">Phone</label><input type="text" id="profilePhone" class="w-full"></div>
-                <div><label class="block text-sm mb-1">Location</label><input type="text" id="profileLocation" class="w-full"></div>
-                <div><label class="block text-sm mb-1">GitHub URL</label><input type="text" id="profileGithub" class="w-full"></div>
-                <div><label class="block text-sm mb-1">LinkedIn URL</label><input type="text" id="profileLinkedin" class="w-full"></div>
-                <div><label class="block text-sm mb-1">Instagram URL</label><input type="text" id="profileInstagram" class="w-full"></div>
-                <div class="md:col-span-2"><label class="block text-sm mb-1">Bio</label><textarea id="profileBio" rows="3" class="w-full"></textarea></div>
+                <div><label class="block text-sm mb-1 text-white">Name</label><input type="text" id="profileName" class="w-full"></div>
+                <div><label class="block text-sm mb-1 text-white">Title/Role</label><input type="text" id="profileTitle" class="w-full"></div>
+                <div><label class="block text-sm mb-1 text-white">Email</label><input type="email" id="profileEmail" class="w-full"></div>
+                <div><label class="block text-sm mb-1 text-white">Phone</label><input type="text" id="profilePhone" class="w-full"></div>
+                <div><label class="block text-sm mb-1 text-white">Location</label><input type="text" id="profileLocation" class="w-full"></div>
+                <div><label class="block text-sm mb-1 text-white">GitHub URL</label><input type="text" id="profileGithub" class="w-full"></div>
+                <div><label class="block text-sm mb-1 text-white">LinkedIn URL</label><input type="text" id="profileLinkedin" class="w-full"></div>
+                <div><label class="block text-sm mb-1 text-white">Instagram URL</label><input type="text" id="profileInstagram" class="w-full"></div>
+                <div class="md:col-span-2"><label class="block text-sm mb-1 text-white">Bio</label><textarea id="profileBio" rows="3" class="w-full"></textarea></div>
                 <div class="md:col-span-2">
-                    <label class="block text-sm mb-1">Profile Photo</label>
+                    <label class="block text-sm mb-1 text-white">Profile Photo</label>
                     <div class="flex gap-4 items-center flex-wrap">
                         <div id="currentPhoto" class="w-20 h-20 rounded-full border-2 border-green-500 flex items-center justify-center bg-black/50 overflow-hidden"></div>
                         <input type="file" id="profilePhoto" accept="image/*" class="flex-1">
@@ -131,15 +164,15 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="px-6 py-2 bg-green-500/20 border border-green-500 rounded hover:bg-green-500/30 transition">💾 Save Profile</button>
+            <button type="submit" class="px-6 py-2 bg-green-500/20 border border-green-500 rounded hover:bg-green-500/30 transition text-green-400">💾 Save Profile</button>
         </form>
     </div>
 
     <!-- SKILLS SECTION -->
     <div id="skillsSection" class="section glass-panel p-6 hidden">
-        <h2 class="text-2xl font-bold mb-4">⚡ Skills Management</h2>
+        <h2 class="text-2xl font-bold mb-4 text-green-400">⚡ Skills Management</h2>
         <form id="skillForm" class="mb-6 p-4 border border-green-500/30 rounded">
-            <h3 class="font-bold mb-2">Add New Skill</h3>
+            <h3 class="font-bold mb-2 text-green-400">Add New Skill</h3>
             <div class="grid md:grid-cols-3 gap-3">
                 <input type="text" id="skillName" placeholder="Skill Name" required>
                 <input type="number" id="skillPercent" placeholder="Percentage (0-100)" required>
@@ -161,9 +194,9 @@
 
     <!-- PROJECTS SECTION -->
     <div id="projectsSection" class="section glass-panel p-6 hidden">
-        <h2 class="text-2xl font-bold mb-4">📁 Projects Management</h2>
+        <h2 class="text-2xl font-bold mb-4 text-green-400">📁 Projects Management</h2>
         <form id="projectForm" class="mb-6 p-4 border border-green-500/30 rounded">
-            <h3 class="font-bold mb-2">Add New Project</h3>
+            <h3 class="font-bold mb-2 text-green-400">Add New Project</h3>
             <div class="grid md:grid-cols-2 gap-3">
                 <input type="text" id="projectTitle" placeholder="Project Title" required>
                 <input type="text" id="projectStatus" placeholder="Status (e.g., Completed, In Progress)">
@@ -179,15 +212,15 @@
 
     <!-- EXPERIENCE SECTION -->
     <div id="experienceSection" class="section glass-panel p-6 hidden">
-        <h2 class="text-2xl font-bold mb-4">💼 Experience Management</h2>
+        <h2 class="text-2xl font-bold mb-4 text-green-400">💼 Experience Management</h2>
         <form id="experienceForm" class="mb-6 p-4 border border-green-500/30 rounded">
-            <h3 class="font-bold mb-2">Add New Experience</h3>
+            <h3 class="font-bold mb-2 text-green-400">Add New Experience</h3>
             <div class="grid md:grid-cols-2 gap-3">
                 <input type="text" id="expCompany" placeholder="Company" required>
                 <input type="text" id="expRole" placeholder="Role" required>
                 <input type="text" id="expStartDate" placeholder="Start Date (e.g., Jan 2023)" required>
                 <input type="text" id="expEndDate" placeholder="End Date (leave empty if current)">
-                <label class="flex items-center gap-2"><input type="checkbox" id="expCurrent"> Currently Working Here</label>
+                <label class="flex items-center gap-2 text-white"><input type="checkbox" id="expCurrent"> Currently Working Here</label>
                 <textarea id="expResponsibilities" placeholder="Responsibilities (one per line)" rows="3" class="md:col-span-2"></textarea>
             </div>
             <button type="submit" class="mt-3 px-4 py-1 btn-neon rounded">➕ Add Experience</button>
@@ -197,9 +230,9 @@
 
     <!-- CERTIFICATIONS SECTION -->
     <div id="certificationsSection" class="section glass-panel p-6 hidden">
-        <h2 class="text-2xl font-bold mb-4">🎓 Certifications Management</h2>
+        <h2 class="text-2xl font-bold mb-4 text-green-400">🎓 Certifications Management</h2>
         <form id="certForm" class="mb-6 p-4 border border-green-500/30 rounded">
-            <h3 class="font-bold mb-2">Add New Certification</h3>
+            <h3 class="font-bold mb-2 text-green-400">Add New Certification</h3>
             <div class="grid md:grid-cols-2 gap-3">
                 <input type="text" id="certTitle" placeholder="Certification Title" required>
                 <input type="text" id="certIssuer" placeholder="Issuer" required>
@@ -214,9 +247,9 @@
 
     <!-- REPOSITORIES SECTION -->
     <div id="repositoriesSection" class="section glass-panel p-6 hidden">
-        <h2 class="text-2xl font-bold mb-4">📚 Repositories Management</h2>
+        <h2 class="text-2xl font-bold mb-4 text-green-400">📚 Repositories Management</h2>
         <form id="repoForm" class="mb-6 p-4 border border-green-500/30 rounded">
-            <h3 class="font-bold mb-2">Add New Repository</h3>
+            <h3 class="font-bold mb-2 text-green-400">Add New Repository</h3>
             <div class="grid md:grid-cols-2 gap-3">
                 <input type="text" id="repoName" placeholder="Repository Name" required>
                 <input type="text" id="repoLang" placeholder="Language">
@@ -233,9 +266,9 @@
 
     <!-- REPORTS SECTION -->
     <div id="reportsSection" class="section glass-panel p-6 hidden">
-        <h2 class="text-2xl font-bold mb-4">📄 Reports/Certificates Management</h2>
+        <h2 class="text-2xl font-bold mb-4 text-green-400">📄 Reports/Certificates Management</h2>
         <form id="reportForm" class="mb-6 p-4 border border-green-500/30 rounded">
-            <h3 class="font-bold mb-2">Add New Report</h3>
+            <h3 class="font-bold mb-2 text-green-400">Add New Report</h3>
             <div class="space-y-3">
                 <input type="text" id="reportTitle" placeholder="Report Title" required class="w-full">
                 <textarea id="reportDesc" placeholder="Description" rows="2" class="w-full"></textarea>
@@ -248,7 +281,7 @@
 
     <!-- CONTACTS SECTION -->
     <div id="contactsSection" class="section glass-panel p-6 hidden">
-        <h2 class="text-2xl font-bold mb-4">✉️ Contact Messages</h2>
+        <h2 class="text-2xl font-bold mb-4 text-green-400">✉️ Contact Messages</h2>
         <div id="contactsList" class="space-y-4"></div>
     </div>
 </div>
@@ -286,7 +319,7 @@ async function fetchWithAuth(url, options = {}) {
 // ==================== TOAST NOTIFICATION ====================
 function showToast(message, type = 'success') {
     const toast = document.createElement('div');
-    toast.className = `toast ${type === 'success' ? 'bg-green-500 text-black' : 'bg-red-500 text-white'}`;
+    toast.className = `toast ${type === 'success' ? 'success' : 'error'}`;
     toast.innerHTML = `<div class="flex items-center gap-3"><span>${type === 'success' ? '✅' : '❌'}</span><span>${message}</span></div>`;
     document.body.appendChild(toast);
     setTimeout(() => {
@@ -353,7 +386,7 @@ async function loadProfile() {
         if (profile.profileImage && profile.profileImage !== '') {
             photoDiv.innerHTML = `<img src="${profile.profileImage}" class="w-full h-full rounded-full object-cover">`;
         } else {
-            photoDiv.innerHTML = '<span class="text-xs text-center">No Photo</span>';
+            photoDiv.innerHTML = '<span class="text-xs text-center text-gray-400">No Photo</span>';
         }
     } catch (error) {
         console.error('Load profile error:', error);
@@ -423,7 +456,7 @@ async function loadSkills() {
         const skills = await res.json();
         const container = document.getElementById('skillsList');
         if (skills.length === 0) {
-            container.innerHTML = '<div class="text-center text-gray-500 py-8">No skills added yet. Add your first skill above!</div>';
+            container.innerHTML = '<div class="text-center text-gray-400 py-8">No skills added yet. Add your first skill above!</div>';
             return;
         }
         container.innerHTML = skills.map(skill => `
@@ -431,11 +464,11 @@ async function loadSkills() {
                 <div>
                     <span class="font-bold text-green-400">${escapeHtml(skill.name)}</span>
                     <span class="ml-3 text-green-500">${skill.percentage}%</span>
-                    <span class="ml-2 text-xs text-gray-400">${escapeHtml(skill.category || 'Technical')}</span>
+                    <span class="ml-2 text-xs text-gray-300">${escapeHtml(skill.category || 'Technical')}</span>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="editSkill('${skill._id}', '${escapeHtml(skill.name)}', ${skill.percentage}, '${escapeHtml(skill.category || 'Technical')}')" class="text-blue-400">✏️ Edit</button>
-                    <button onclick="deleteSkill('${skill._id}')" class="text-red-400">🗑️ Delete</button>
+                    <button onclick="editSkill('${skill._id}', '${escapeHtml(skill.name)}', ${skill.percentage}, '${escapeHtml(skill.category || 'Technical')}')" class="text-green-400 hover:text-green-300">✏️ Edit</button>
+                    <button onclick="deleteSkill('${skill._id}')" class="text-red-400 hover:text-red-300">🗑️ Delete</button>
                 </div>
             </div>
         `).join('');
@@ -487,19 +520,19 @@ async function loadProjects() {
         const projects = await res.json();
         const container = document.getElementById('projectsList');
         if (projects.length === 0) {
-            container.innerHTML = '<div class="text-center text-gray-500 py-8 col-span-2">No projects yet. Add your first project above!</div>';
+            container.innerHTML = '<div class="text-center text-gray-400 py-8 col-span-2">No projects yet. Add your first project above!</div>';
             return;
         }
         container.innerHTML = projects.map(proj => `
             <div class="bg-black/50 border border-green-500/30 rounded-lg p-4">
                 <h3 class="text-xl font-bold text-green-400">${escapeHtml(proj.title)}</h3>
-                <p class="text-gray-400 text-sm mt-1">${escapeHtml(proj.description || '')}</p>
+                <p class="text-gray-300 text-sm mt-1">${escapeHtml(proj.description || '')}</p>
                 <div class="flex flex-wrap gap-2 mt-2">
                     ${proj.technologies ? proj.technologies.map(t => `<span class="text-xs px-2 py-0.5 bg-green-900 text-green-300 rounded">${escapeHtml(t)}</span>`).join('') : ''}
                 </div>
                 <div class="flex gap-3 mt-3 pt-3 border-t border-green-500/20">
-                    <button onclick="editProject('${proj._id}')" class="text-blue-400 text-sm">✏️ Edit</button>
-                    <button onclick="deleteProject('${proj._id}')" class="text-red-400 text-sm">🗑️ Delete</button>
+                    <button onclick="editProject('${proj._id}')" class="text-green-400 hover:text-green-300 text-sm">✏️ Edit</button>
+                    <button onclick="deleteProject('${proj._id}')" class="text-red-400 hover:text-red-300 text-sm">🗑️ Delete</button>
                 </div>
             </div>
         `).join('');
@@ -557,7 +590,7 @@ async function loadExperience() {
         const experiences = await res.json();
         const container = document.getElementById('experienceList');
         if (experiences.length === 0) {
-            container.innerHTML = '<div class="text-center text-gray-500 py-8">No experience entries. Add your work history above!</div>';
+            container.innerHTML = '<div class="text-center text-gray-400 py-8">No experience entries. Add your work history above!</div>';
             return;
         }
         container.innerHTML = experiences.map(exp => `
@@ -565,14 +598,14 @@ async function loadExperience() {
                 <div class="flex justify-between items-start flex-wrap gap-2">
                     <div>
                         <h3 class="text-xl font-bold text-green-400">${escapeHtml(exp.role)} @ ${escapeHtml(exp.company)}</h3>
-                        <p class="text-gray-400 text-sm">${exp.startDate} - ${exp.isCurrent ? 'Present' : (exp.endDate || 'N/A')}</p>
-                        <ul class="list-disc list-inside mt-2 text-sm text-gray-400">
+                        <p class="text-gray-300 text-sm">${exp.startDate} - ${exp.isCurrent ? 'Present' : (exp.endDate || 'N/A')}</p>
+                        <ul class="list-disc list-inside mt-2 text-sm text-gray-300">
                             ${exp.responsibilities ? exp.responsibilities.map(r => `<li>${escapeHtml(r)}</li>`).join('') : '<li>No responsibilities listed</li>'}
                         </ul>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="editExperience('${exp._id}')" class="text-blue-400">✏️ Edit</button>
-                        <button onclick="deleteExperience('${exp._id}')" class="text-red-400">🗑️ Delete</button>
+                        <button onclick="editExperience('${exp._id}')" class="text-green-400 hover:text-green-300">✏️ Edit</button>
+                        <button onclick="deleteExperience('${exp._id}')" class="text-red-400 hover:text-red-300">🗑️ Delete</button>
                     </div>
                 </div>
             </div>
@@ -633,19 +666,19 @@ async function loadCertifications() {
         const certs = await res.json();
         const container = document.getElementById('certificationsList');
         if (certs.length === 0) {
-            container.innerHTML = '<div class="text-center text-gray-500 py-8">No certifications added yet.</div>';
+            container.innerHTML = '<div class="text-center text-gray-400 py-8">No certifications added yet.</div>';
             return;
         }
         container.innerHTML = certs.map(c => `
             <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
                 <div>
                     <span class="font-bold text-green-400">${escapeHtml(c.title)}</span>
-                    <span class="ml-2 text-sm text-gray-400">– ${escapeHtml(c.issuer)} (${c.date})</span>
-                    ${c.credentialId ? `<br><span class="text-xs text-gray-500">ID: ${escapeHtml(c.credentialId)}</span>` : ''}
+                    <span class="ml-2 text-sm text-gray-300">– ${escapeHtml(c.issuer)} (${c.date})</span>
+                    ${c.credentialId ? `<br><span class="text-xs text-gray-400">ID: ${escapeHtml(c.credentialId)}</span>` : ''}
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="editCert('${c._id}')" class="text-blue-400">✏️ Edit</button>
-                    <button onclick="deleteCert('${c._id}')" class="text-red-400">🗑️ Delete</button>
+                    <button onclick="editCert('${c._id}')" class="text-green-400 hover:text-green-300">✏️ Edit</button>
+                    <button onclick="deleteCert('${c._id}')" class="text-red-400 hover:text-red-300">🗑️ Delete</button>
                 </div>
             </div>
         `).join('');
@@ -701,22 +734,22 @@ async function loadRepositories() {
         const repos = await res.json();
         const container = document.getElementById('repositoriesList');
         if (repos.length === 0) {
-            container.innerHTML = '<div class="text-center text-gray-500 py-8">No repositories added yet.</div>';
+            container.innerHTML = '<div class="text-center text-gray-400 py-8">No repositories added yet.</div>';
             return;
         }
         container.innerHTML = repos.map(r => `
             <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
                 <div>
                     <span class="font-bold text-green-400">${escapeHtml(r.name)}</span>
-                    <span class="ml-2 text-xs text-gray-500">${r.language || 'N/A'}</span>
-                    <div class="flex gap-3 mt-1 text-xs text-gray-500">
+                    <span class="ml-2 text-xs text-gray-300">${r.language || 'N/A'}</span>
+                    <div class="flex gap-3 mt-1 text-xs text-gray-300">
                         <span>⭐ ${r.stars || 0}</span>
                         <span>🍴 ${r.forks || 0}</span>
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="editRepo('${r._id}')" class="text-blue-400">✏️ Edit</button>
-                    <button onclick="deleteRepo('${r._id}')" class="text-red-400">🗑️ Delete</button>
+                    <button onclick="editRepo('${r._id}')" class="text-green-400 hover:text-green-300">✏️ Edit</button>
+                    <button onclick="deleteRepo('${r._id}')" class="text-red-400 hover:text-red-300">🗑️ Delete</button>
                 </div>
             </div>
         `).join('');
@@ -773,18 +806,18 @@ async function loadReports() {
         const reports = await res.json();
         const container = document.getElementById('reportsList');
         if (reports.length === 0) {
-            container.innerHTML = '<div class="text-center text-gray-500 py-8">No reports added yet.</div>';
+            container.innerHTML = '<div class="text-center text-gray-400 py-8">No reports added yet.</div>';
             return;
         }
         container.innerHTML = reports.map(r => `
             <div class="bg-black/50 border border-green-500/30 rounded-lg p-4 flex justify-between items-center">
                 <div>
                     <span class="font-bold text-green-400">${escapeHtml(r.title)}</span>
-                    ${r.description ? `<br><span class="text-sm text-gray-400">${escapeHtml(r.description)}</span>` : ''}
+                    ${r.description ? `<br><span class="text-sm text-gray-300">${escapeHtml(r.description)}</span>` : ''}
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="editReport('${r._id}')" class="text-blue-400">✏️ Edit</button>
-                    <button onclick="deleteReport('${r._id}')" class="text-red-400">🗑️ Delete</button>
+                    <button onclick="editReport('${r._id}')" class="text-green-400 hover:text-green-300">✏️ Edit</button>
+                    <button onclick="deleteReport('${r._id}')" class="text-red-400 hover:text-red-300">🗑️ Delete</button>
                 </div>
             </div>
         `).join('');
@@ -837,7 +870,7 @@ async function loadContacts() {
         const contacts = await res.json();
         const container = document.getElementById('contactsList');
         if (contacts.length === 0) {
-            container.innerHTML = '<div class="text-center text-gray-500 py-8">No contact messages yet.</div>';
+            container.innerHTML = '<div class="text-center text-gray-400 py-8">No contact messages yet.</div>';
             return;
         }
         container.innerHTML = contacts.map(c => `
@@ -845,11 +878,11 @@ async function loadContacts() {
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="font-bold text-green-400">${escapeHtml(c.name)}</p>
-                        <p class="text-sm text-gray-400">📧 ${escapeHtml(c.email)}</p>
+                        <p class="text-sm text-gray-300">📧 ${escapeHtml(c.email)}</p>
                         <p class="text-sm text-gray-300 mt-2">${escapeHtml(c.message)}</p>
-                        <p class="text-xs text-gray-500 mt-2">📅 ${new Date(c.createdAt).toLocaleString()}</p>
+                        <p class="text-xs text-gray-400 mt-2">📅 ${new Date(c.createdAt).toLocaleString()}</p>
                     </div>
-                    <button onclick="deleteContact('${c._id}')" class="text-red-400">🗑️ Delete</button>
+                    <button onclick="deleteContact('${c._id}')" class="text-red-400 hover:text-red-300">🗑️ Delete</button>
                 </div>
             </div>
         `).join('');
