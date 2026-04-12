@@ -3,14 +3,14 @@ import { motion } from "framer-motion";
 import { 
   Home, FolderGit2, Database, User, BarChart3, Award, 
   Briefcase, Mail, FileText, Sun, Moon, Copy, Shield, 
-  Zap, BookOpen, Code, Cpu, Users, Activity, UserCircle, Settings
+  Zap, BookOpen, Code, Cpu, Users, Activity, UserCircle, Settings, X
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useAdmin } from "../context/AdminContext";
 import { useEffect, useState } from "react";
 import { fetchProfile } from "../api";
 
-const Sidebar = ({ darkMode, toggleDarkMode }) => {
+const Sidebar = ({ darkMode, toggleDarkMode, onClose }) => {
   const navigate = useNavigate();
   const { isAdmin } = useAdmin();
   const [profile, setProfile] = useState({});
@@ -66,6 +66,11 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
     }
   ];
 
+  // Close sidebar when a link is clicked (mobile)
+  const handleLinkClick = () => {
+    if (onClose) onClose();
+  };
+
   return (
     <motion.aside
       initial={{ x: -120, opacity: 0 }}
@@ -73,6 +78,13 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="fixed left-0 top-0 h-full w-72 bg-black/90 backdrop-blur-xl border-r border-neon/40 z-40 flex flex-col shadow-2xl shadow-neon/10"
     >
+      {/* Close button (only visible on mobile) */}
+      <div className="flex justify-end p-4 md:hidden">
+        <button onClick={onClose} className="text-neon">
+          <X size={24} />
+        </button>
+      </div>
+
       {/* Profile Section with Glow */}
       <div className="flex flex-col items-center py-6 px-4 border-b border-neon/30">
         <div className="relative">
@@ -111,6 +123,7 @@ const Sidebar = ({ darkMode, toggleDarkMode }) => {
               <NavLink
                 key={item.path}
                 to={item.path}
+                onClick={handleLinkClick}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 mb-1 rounded-md transition-all duration-200 group ${
                     isActive
