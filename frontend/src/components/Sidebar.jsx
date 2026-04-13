@@ -3,14 +3,14 @@ import { motion } from "framer-motion";
 import { 
   Home, FolderGit2, Database, User, BarChart3, Award, 
   Briefcase, Mail, FileText, Sun, Moon, Copy, Shield, 
-  Zap, BookOpen, ChevronLeft, ChevronRight
+  Zap, BookOpen, ChevronLeft, ChevronRight, X
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useAdmin } from "../context/AdminContext";
 import { useEffect, useState } from "react";
 import { fetchProfile } from "../api";
 
-const Sidebar = ({ darkMode, toggleDarkMode, isMinimized, onMinimizeToggle }) => {
+const Sidebar = ({ darkMode, toggleDarkMode, isMinimized, onMinimizeToggle, onClose }) => {
   const navigate = useNavigate();
   const { isAdmin } = useAdmin();
   const [profile, setProfile] = useState({});
@@ -65,6 +65,10 @@ const Sidebar = ({ darkMode, toggleDarkMode, isMinimized, onMinimizeToggle }) =>
     }
   ];
 
+  const handleLinkClick = () => {
+    if (onClose) onClose(); // close mobile drawer when link clicked
+  };
+
   return (
     <motion.aside
       initial={{ x: -120, opacity: 0 }}
@@ -74,8 +78,15 @@ const Sidebar = ({ darkMode, toggleDarkMode, isMinimized, onMinimizeToggle }) =>
         isMinimized ? 'w-20' : 'w-72'
       }`}
     >
-      {/* Minimize toggle button (chevron) – optional, but kept for manual toggle */}
-      <div className="absolute -right-3 top-20 z-50">
+      {/* Close button – only visible on mobile (inside drawer) */}
+      <div className="flex justify-end p-4 md:hidden">
+        <button onClick={onClose} className="text-neon">
+          <X size={24} />
+        </button>
+      </div>
+
+      {/* Minimize toggle button – only visible on desktop */}
+      <div className="absolute -right-3 top-20 z-50 hidden md:block">
         <button
           onClick={onMinimizeToggle}
           className="p-1 rounded-full bg-black border border-neon/50 text-neon hover:bg-neon/10"
@@ -124,6 +135,7 @@ const Sidebar = ({ darkMode, toggleDarkMode, isMinimized, onMinimizeToggle }) =>
               <NavLink
                 key={item.path}
                 to={item.path}
+                onClick={handleLinkClick}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 mb-1 rounded-md transition-all duration-200 group ${
                     isActive
