@@ -15,32 +15,33 @@ try {
 
 const Layout = ({ children }) => {
   const [darkMode, setDarkMode] = useState(true);
-  const [sidebarMinimized, setSidebarMinimized] = useState(true); // desktop only
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [sidebarMinimized, setSidebarMinimized] = useState(true);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const { isAdmin = false } = useAdmin();
   const navigate = useNavigate();
   const toggleDarkMode = () => setDarkMode(!darkMode);
 
   const toggleSidebarMinimize = () => setSidebarMinimized(!sidebarMinimized);
-  const openMobileSidebar = () => setMobileSidebarOpen(true);
-  const closeMobileSidebar = () => setMobileSidebarOpen(false);
+  const openDrawer = () => setMobileDrawerOpen(true);
+  const closeDrawer = () => setMobileDrawerOpen(false);
 
   return (
     <div className="min-h-screen bg-black text-neon font-mono">
-      {/* Hamburger button – visible only on mobile */}
+      {/* Hamburger button – only visible on mobile */}
       <button
-        onClick={openMobileSidebar}
+        onClick={openDrawer}
         className="fixed top-4 left-4 z-50 p-2 bg-black/80 border border-neon/30 rounded-md md:hidden"
       >
         <Menu size={24} className="text-neon" />
       </button>
 
-      {/* Sidebar – drawer on mobile, fixed on desktop */}
+      {/* Sidebar container – drawer on mobile, fixed on desktop */}
       <div
         className={`
           fixed left-0 top-0 h-full z-40 transition-transform duration-300 ease-in-out
-          ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          ${mobileDrawerOpen ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0
+          ${!mobileDrawerOpen && 'invisible md:visible'}
         `}
       >
         <Sidebar
@@ -48,23 +49,21 @@ const Layout = ({ children }) => {
           toggleDarkMode={toggleDarkMode}
           isMinimized={sidebarMinimized}
           onMinimizeToggle={toggleSidebarMinimize}
-          onClose={closeMobileSidebar}
-          isMobile={false} // desktop
+          onClose={closeDrawer}
         />
       </div>
 
-      {/* Overlay when sidebar is open on mobile */}
-      {mobileSidebarOpen && (
+      {/* Overlay when drawer is open on mobile */}
+      {mobileDrawerOpen && (
         <div
           className="fixed inset-0 bg-black/70 z-30 md:hidden"
-          onClick={closeMobileSidebar}
+          onClick={closeDrawer}
         />
       )}
 
-      {/* Main content – margin adjusts only on desktop */}
+      {/* Main content – margin only on desktop */}
       <main className={`md:transition-all md:duration-300 p-4 md:p-6 ${sidebarMinimized ? 'md:ml-20' : 'md:ml-72'}`}>
         <div className="max-w-6xl mx-auto">
-          {/* Admin Quick Access Button */}
           <div className="fixed bottom-4 right-4 z-50">
             <button
               onClick={() => navigate('/admin')}

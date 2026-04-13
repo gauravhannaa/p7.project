@@ -66,7 +66,7 @@ const Sidebar = ({ darkMode, toggleDarkMode, isMinimized, onMinimizeToggle, onCl
   ];
 
   const handleLinkClick = () => {
-    if (onClose) onClose(); // close mobile drawer when link clicked
+    if (onClose) onClose(); // close drawer on mobile when a link is clicked
   };
 
   return (
@@ -78,14 +78,14 @@ const Sidebar = ({ darkMode, toggleDarkMode, isMinimized, onMinimizeToggle, onCl
         isMinimized ? 'w-20' : 'w-72'
       }`}
     >
-      {/* Close button – only visible on mobile (inside drawer) */}
+      {/* Close button (only visible on mobile) */}
       <div className="flex justify-end p-4 md:hidden">
         <button onClick={onClose} className="text-neon">
           <X size={24} />
         </button>
       </div>
 
-      {/* Minimize toggle button – only visible on desktop */}
+      {/* Minimize/expand chevron button (only visible on desktop) */}
       <div className="absolute -right-3 top-20 z-50 hidden md:block">
         <button
           onClick={onMinimizeToggle}
