@@ -14,6 +14,17 @@ const Sidebar = ({ darkMode, toggleDarkMode, isMinimized, onMinimizeToggle, onCl
   const navigate = useNavigate();
   const { isAdmin } = useAdmin();
   const [profile, setProfile] = useState({});
+  const [isMobile, setIsMobile] = useState(false); // detect mobile screen
+
+  // Detect screen width to know if we are on mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -65,8 +76,9 @@ const Sidebar = ({ darkMode, toggleDarkMode, isMinimized, onMinimizeToggle, onCl
     }
   ];
 
+  // Close drawer only on mobile when a link is clicked
   const handleLinkClick = () => {
-    if (onClose) onClose(); // close drawer on mobile when a link is clicked
+    if (isMobile && onClose) onClose();
   };
 
   return (
