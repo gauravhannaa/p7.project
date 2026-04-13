@@ -2,6 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const ProjectCard = ({ project }) => {
+  // Determine if live link is valid (not "#" or empty)
+  const hasValidLiveLink = project.liveLink && project.liveLink !== '#';
+  const hasValidGithub = project.github && project.github !== '#';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -18,9 +22,7 @@ const ProjectCard = ({ project }) => {
         <h2 className="text-lg font-bold text-neon leading-snug">
           {project.title}
         </h2>
-
-        {/* Live Badge */}
-        {project.liveLink && project.liveLink !== "#" && (
+        {hasValidLiveLink && (
           <span className="text-[10px] px-2 py-1 bg-neon/20 border border-neon rounded text-neon animate-pulse">
             LIVE
           </span>
@@ -69,22 +71,10 @@ const ProjectCard = ({ project }) => {
         </div>
       )}
 
-      {/* Buttons */}
+      {/* Buttons – order swapped: Source Code first, then Live Preview */}
       <div className="flex gap-3 pt-3">
-        {/* Live Button */}
-        {project.liveLink && project.liveLink !== "#" && (
-          <a
-            href={project.liveLink}
-            target="_blank"
-            rel="noreferrer"
-            className="text-xs px-3 py-1 border border-neon rounded hover:bg-neon/20 hover:shadow-neon transition"
-          >
-            🚀 Live Preview
-          </a>
-        )}
-
-        {/* GitHub Button */}
-        {project.github && (
+        {/* GitHub Button (Source Code) – shown always if valid */}
+        {hasValidGithub && (
           <a
             href={project.github}
             target="_blank"
@@ -92,6 +82,17 @@ const ProjectCard = ({ project }) => {
             className="text-xs px-3 py-1 border border-gray-500 rounded hover:bg-gray-700 transition"
           >
             💻 Source Code
+          </a>
+        )}
+        {/* Live Preview Button – shown only if valid */}
+        {hasValidLiveLink && (
+          <a
+            href={project.liveLink}
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs px-3 py-1 border border-neon rounded hover:bg-neon/20 hover:shadow-neon transition"
+          >
+            🚀 Live Preview
           </a>
         )}
       </div>
