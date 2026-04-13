@@ -5,7 +5,6 @@ import ScanlineOverlay from "./ScanlineOverlay";
 import { Toaster } from "react-hot-toast";
 import { Shield, Menu } from "lucide-react";
 
-// Try to import AdminContext, but don't fail if it doesn't exist
 let useAdmin = () => ({ isAdmin: false });
 try {
   const adminContext = require("../context/AdminContext");
@@ -16,48 +15,32 @@ try {
 
 const Layout = ({ children }) => {
   const [darkMode, setDarkMode] = useState(true);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [sidebarMinimized, setSidebarMinimized] = useState(false); // new state
+  const [sidebarMinimized, setSidebarMinimized] = useState(true); // start minimized
   const { isAdmin = false } = useAdmin();
   const navigate = useNavigate();
   const toggleDarkMode = () => setDarkMode(!darkMode);
 
+  const toggleSidebar = () => setSidebarMinimized(!sidebarMinimized);
+
   return (
     <div className="min-h-screen bg-black text-neon font-mono">
-      {/* Hamburger button (visible only on mobile) */}
+      {/* Hamburger button – toggles sidebar expansion */}
       <button
-        onClick={() => setMobileSidebarOpen(true)}
-        className="fixed top-4 left-4 z-50 p-2 bg-black/80 border border-neon/30 rounded-md md:hidden"
+        onClick={toggleSidebar}
+        className="fixed top-4 left-4 z-50 p-2 bg-black/80 border border-neon/30 rounded-md"
       >
         <Menu size={24} className="text-neon" />
       </button>
 
-      {/* Sidebar – drawer on mobile, fixed on desktop */}
-      <div
-        className={`
-          fixed left-0 top-0 h-full z-40 transition-transform duration-300 ease-in-out
-          ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          md:translate-x-0
-        `}
-      >
-        <Sidebar
-          darkMode={darkMode}
-          toggleDarkMode={toggleDarkMode}
-          onClose={() => setMobileSidebarOpen(false)}
-          isMinimized={sidebarMinimized}
-          onMinimizeToggle={() => setSidebarMinimized(!sidebarMinimized)}
-        />
-      </div>
+      {/* Sidebar – always fixed, no drawer */}
+      <Sidebar
+        darkMode={darkMode}
+        toggleDarkMode={toggleDarkMode}
+        isMinimized={sidebarMinimized}
+        onMinimizeToggle={toggleSidebar}
+      />
 
-      {/* Overlay when sidebar is open on mobile */}
-      {mobileSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/70 z-30 md:hidden"
-          onClick={() => setMobileSidebarOpen(false)}
-        />
-      )}
-
-      {/* Main content – margin adjusts based on sidebar state (desktop only) */}
+      {/* Main content – margin adjusts based on sidebar width */}
       <main className={`md:transition-all md:duration-300 p-4 md:p-6 ${sidebarMinimized ? 'md:ml-20' : 'md:ml-72'}`}>
         <div className="max-w-6xl mx-auto">
           {/* Admin Quick Access Button */}

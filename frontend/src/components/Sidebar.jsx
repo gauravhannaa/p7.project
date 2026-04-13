@@ -3,15 +3,14 @@ import { motion } from "framer-motion";
 import { 
   Home, FolderGit2, Database, User, BarChart3, Award, 
   Briefcase, Mail, FileText, Sun, Moon, Copy, Shield, 
-  Zap, BookOpen, Code, Cpu, Users, Activity, UserCircle, Settings, X,
-  ChevronLeft, ChevronRight
+  Zap, BookOpen, ChevronLeft, ChevronRight
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useAdmin } from "../context/AdminContext";
 import { useEffect, useState } from "react";
 import { fetchProfile } from "../api";
 
-const Sidebar = ({ darkMode, toggleDarkMode, onClose, isMinimized, onMinimizeToggle }) => {
+const Sidebar = ({ darkMode, toggleDarkMode, isMinimized, onMinimizeToggle }) => {
   const navigate = useNavigate();
   const { isAdmin } = useAdmin();
   const [profile, setProfile] = useState({});
@@ -66,14 +65,6 @@ const Sidebar = ({ darkMode, toggleDarkMode, onClose, isMinimized, onMinimizeTog
     }
   ];
 
-  const handleLinkClick = () => {
-    if (onClose) onClose();
-  };
-
-  const toggleMinimize = () => {
-    if (onMinimizeToggle) onMinimizeToggle();
-  };
-
   return (
     <motion.aside
       initial={{ x: -120, opacity: 0 }}
@@ -83,17 +74,10 @@ const Sidebar = ({ darkMode, toggleDarkMode, onClose, isMinimized, onMinimizeTog
         isMinimized ? 'w-20' : 'w-72'
       }`}
     >
-      {/* Close button (only visible on mobile) */}
-      <div className="flex justify-end p-4 md:hidden">
-        <button onClick={onClose} className="text-neon">
-          <X size={24} />
-        </button>
-      </div>
-
-      {/* Minimize toggle button – visible on all screens */}
+      {/* Minimize toggle button (chevron) – optional, but kept for manual toggle */}
       <div className="absolute -right-3 top-20 z-50">
         <button
-          onClick={toggleMinimize}
+          onClick={onMinimizeToggle}
           className="p-1 rounded-full bg-black border border-neon/50 text-neon hover:bg-neon/10"
         >
           {isMinimized ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
@@ -105,11 +89,7 @@ const Sidebar = ({ darkMode, toggleDarkMode, onClose, isMinimized, onMinimizeTog
         <div className="relative">
           <div className={`rounded-full border-2 border-neon flex items-center justify-center bg-black/50 shadow-lg shadow-neon/20 ${isMinimized ? 'w-12 h-12' : 'w-20 h-20'}`}>
             {profile.profileImage ? (
-              <img 
-                src={profile.profileImage} 
-                alt={profile.name} 
-                className="w-full h-full rounded-full object-cover"
-              />
+              <img src={profile.profileImage} alt={profile.name} className="w-full h-full rounded-full object-cover" />
             ) : (
               <span className={`${isMinimized ? 'text-2xl' : 'text-4xl'}`}>👨‍💻</span>
             )}
@@ -144,7 +124,6 @@ const Sidebar = ({ darkMode, toggleDarkMode, onClose, isMinimized, onMinimizeTog
               <NavLink
                 key={item.path}
                 to={item.path}
-                onClick={handleLinkClick}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 mb-1 rounded-md transition-all duration-200 group ${
                     isActive
