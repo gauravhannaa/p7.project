@@ -15,7 +15,7 @@ try {
 
 const Layout = ({ children }) => {
   const [darkMode, setDarkMode] = useState(true);
-  const [sidebarMinimized, setSidebarMinimized] = useState(true);
+  const [sidebarMinimized, setSidebarMinimized] = useState(false); // ← CHANGED: now starts expanded (false) on desktop
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const { isAdmin = false } = useAdmin();
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const Layout = ({ children }) => {
         <Menu size={24} className="text-neon" />
       </button>
 
-      {/* Sidebar container – drawer on mobile, fixed on desktop */}
+      {/* Sidebar – drawer on mobile, fixed on desktop */}
       <div
         className={`
           fixed left-0 top-0 h-full z-40 transition-transform duration-300 ease-in-out
@@ -61,7 +61,7 @@ const Layout = ({ children }) => {
         />
       )}
 
-      {/* Main content – margin only on desktop */}
+      {/* Main content – margin adjusts on desktop */}
       <main className={`md:transition-all md:duration-300 p-4 md:p-6 ${sidebarMinimized ? 'md:ml-20' : 'md:ml-72'}`}>
         <div className="max-w-6xl mx-auto">
           <div className="fixed bottom-4 right-4 z-50">
