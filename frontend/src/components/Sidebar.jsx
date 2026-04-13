@@ -1,163 +1,78 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { 
-  Home, FolderGit2, Database, User, BarChart3, Award, 
-  Briefcase, Mail, FileText, Sun, Moon, Copy, Shield, 
-  Zap, BookOpen, Code, Cpu, Users, Activity, UserCircle, Settings, X
-} from "lucide-react";
-import { toast } from "react-hot-toast";
-import { useAdmin } from "../context/AdminContext";
-import { useEffect, useState } from "react";
-import { fetchProfile } from "../api";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "./Sidebar";
+import ScanlineOverlay from "./ScanlineOverlay";
+import { Toaster } from "react-hot-toast";
+import { Shield, Menu } from "lucide-react";
 
-const Sidebar = ({ darkMode, toggleDarkMode, onClose }) => {
+// Try to import AdminContext, but don't fail if it doesn't exist
+let useAdmin = () => ({ isAdmin: false });
+try {
+  const adminContext = require("../context/AdminContext");
+  if (adminContext.useAdmin) useAdmin = adminContext.useAdmin;
+} catch (e) {
+  console.warn("AdminContext not available, admin features disabled");
+}
+
+const Layout = ({ children }) => {
+  const [darkMode, setDarkMode] = useState(true);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const { isAdmin = false } = useAdmin();
   const navigate = useNavigate();
-  const { isAdmin } = useAdmin();
-  const [profile, setProfile] = useState({});
-
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const res = await fetchProfile();
-        setProfile(res.data);
-      } catch (err) {
-        console.error("Failed to load profile", err);
-      }
-    };
-    loadProfile();
-  }, []);
-
-  const copyEmail = () => {
-    navigator.clipboard.writeText(profile.email || "gauravhanna2003@gmail.com");
-    toast.success("📧 Email copied to clipboard!");
-  };
-
-  // Professional grouping of navigation items
-  const navGroups = [
-    {
-      title: "Profile",
-      items: [
-        { name: "About", path: "/about", icon: User },
-        { name: "Resume", path: "/resume", icon: FileText },
-        { name: "Contact", path: "/contact", icon: Mail },
-      ]
-    },
-    {
-      title: "Work",
-      items: [
-        { name: "Experience", path: "/experience", icon: Briefcase },
-        { name: "Projects", path: "/projects", icon: FolderGit2 },
-        { name: "Repositories", path: "/repositories", icon: Database },
-      ]
-    },
-    {
-      title: "Skills & Credentials",
-      items: [
-        { name: "Skills", path: "/skills", icon: Zap },
-        { name: "Certifications", path: "/certifications", icon: Award },
-        { name: "Reports", path: "/reports", icon: FileText },
-      ]
-    },
-    {
-      title: "Analytics",
-      items: [
-        { name: "GitHub Stats", path: "/stats", icon: BarChart3 },
-      ]
-    }
-  ];
-
-  // Close sidebar when a link is clicked (mobile)
-  const handleLinkClick = () => {
-    if (onClose) onClose();
-  };
+  const toggleDarkMode = () => setDarkMode(!darkMode);
 
   return (
-    <motion.aside
-      initial={{ x: -120, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="fixed left-0 top-0 h-full w-72 bg-black/90 backdrop-blur-xl border-r border-neon/40 z-40 flex flex-col shadow-2xl shadow-neon/10"
-    >
-      {/* Close button (only visible on mobile) */}
-      <div className="flex justify-end p-4 md:hidden">
-        <button onClick={onClose} className="text-neon">
-          <X size={24} />
-        </button>
+    <div className="min-h-screen bg-black text-neon font-mono">
+      {/* Hamburger button (visible only on mobile) */}
+      <button
+        onClick={() => setMobileSidebarOpen(true)}
+        className="fixed top-4 left-4 z-50 p-2 bg-black/80 border border-neon/30 rounded-md md:hidden"
+      >
+        <Menu size={24} className="text-neon" />
+      </button>
+
+      {/* Sidebar – drawer on mobile, fixed on desktop */}
+      <div
+        className={`
+          fixed left-0 top-0 h-full z-40 transition-transform duration-300 ease-in-out
+          ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:translate-x-0
+        `}
+      >
+        <Sidebar
+          darkMode={darkMode}
+          toggleDarkMode={toggleDarkMode}
+          onClose={() => setMobileSidebarOpen(false)}
+        />
       </div>
 
-      {/* Profile Section with Glow */}
-      <div className="flex flex-col items-center py-6 px-4 border-b border-neon/30">
-        <div className="relative">
-          <div className="w-20 h-20 rounded-full border-2 border-neon flex items-center justify-center bg-black/50 shadow-lg shadow-neon/20">
-            {profile.profileImage ? (
-              <img 
-                src={profile.profileImage} 
-                alt={profile.name} 
-                className="w-full h-full rounded-full object-cover"
-              />
-            ) : (
-              <span className="text-4xl">👨‍💻</span>
-            )}
+      {/* Overlay when sidebar is open on mobile */}
+      {mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/70 z-30 md:hidden"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
+
+      {/* Main content – margin-left only on desktop */}
+      <main className="md:ml-64 p-4 md:p-6">
+        <div className="max-w-6xl mx-auto">
+          {/* Admin Quick Access Button */}
+          <div className="fixed bottom-4 right-4 z-50">
+            <button
+              onClick={() => navigate('/admin')}
+              className="p-3 bg-neon/20 border border-neon rounded-full hover:bg-neon/30 transition shadow-lg"
+            >
+              <Shield size={20} className={isAdmin ? "text-yellow-400" : "text-neon"} />
+            </button>
           </div>
-          {isAdmin && (
-            <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center shadow-md">
-              <Shield size={12} className="text-black" />
-            </div>
-          )}
+          {children}
         </div>
-        <h2 className="text-lg font-bold text-neon mt-3 tracking-wider">{profile.name || "Gaurav Tiwari"}</h2>
-        <p className="text-[11px] text-neon/70 text-center mt-1 px-2">{profile.title || "Security & DevOps Engineer"}</p>
-        <div className="mt-2 px-2 py-0.5 border border-neon/50 rounded-full text-[9px] bg-neon/5">
-          🔐 Verified Secure
-        </div>
-      </div>
-
-      {/* Navigation Links with Group Headers */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto">
-        {navGroups.map((group, idx) => (
-          <div key={idx} className="mb-4">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-2 px-2">
-              {group.title}
-            </div>
-            {group.items.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={handleLinkClick}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 mb-1 rounded-md transition-all duration-200 group ${
-                    isActive
-                      ? "bg-neon/15 text-neon border-l-2 border-neon"
-                      : "text-gray-400 hover:text-neon hover:bg-neon/5"
-                  }`
-                }
-              >
-                <item.icon size={16} className="group-hover:scale-105 transition-transform" />
-                <span className="text-xs font-mono tracking-wide">{item.name}</span>
-              </NavLink>
-            ))}
-          </div>
-        ))}
-      </nav>
-
-      {/* Footer Actions */}
-      <div className="p-4 border-t border-neon/30 space-y-2">
-        <button
-          onClick={toggleDarkMode}
-          className="w-full flex items-center justify-center gap-2 px-3 py-1.5 text-xs border border-neon/40 rounded-md hover:bg-neon/10 transition-all hover:shadow-neon/20 hover:shadow-md"
-        >
-          {darkMode ? <Sun size={14} /> : <Moon size={14} />}
-          {darkMode ? "Light Mode" : "Dark Mode"}
-        </button>
-        <button
-          onClick={copyEmail}
-          className="w-full flex items-center justify-center gap-2 px-3 py-1.5 text-xs border border-neon/40 rounded-md hover:bg-neon/10 transition-all hover:shadow-neon/20 hover:shadow-md"
-        >
-          <Copy size={14} /> Copy Email
-        </button>
-      </div>
-    </motion.aside>
+      </main>
+      <ScanlineOverlay />
+      <Toaster position="bottom-right" toastOptions={{ style: { background: "#111", color: "#00ff41" } }} />
+    </div>
   );
 };
 
-export default Sidebar;
+export default Layout;
