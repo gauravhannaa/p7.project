@@ -11,11 +11,10 @@ import { useAdmin } from "../context/AdminContext";
 import { useEffect, useState } from "react";
 import { fetchProfile } from "../api";
 
-const Sidebar = ({ darkMode, toggleDarkMode, onClose }) => {
+const Sidebar = ({ darkMode, toggleDarkMode, onClose, isMinimized, onMinimizeToggle }) => {
   const navigate = useNavigate();
   const { isAdmin } = useAdmin();
   const [profile, setProfile] = useState({});
-  const [isMinimized, setIsMinimized] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -34,7 +33,6 @@ const Sidebar = ({ darkMode, toggleDarkMode, onClose }) => {
     toast.success("📧 Email copied to clipboard!");
   };
 
-  // Professional grouping of navigation items
   const navGroups = [
     {
       title: "Profile",
@@ -68,13 +66,12 @@ const Sidebar = ({ darkMode, toggleDarkMode, onClose }) => {
     }
   ];
 
-  // Close sidebar when a link is clicked (mobile)
   const handleLinkClick = () => {
     if (onClose) onClose();
   };
 
   const toggleMinimize = () => {
-    setIsMinimized(!isMinimized);
+    if (onMinimizeToggle) onMinimizeToggle();
   };
 
   return (
@@ -93,8 +90,8 @@ const Sidebar = ({ darkMode, toggleDarkMode, onClose }) => {
         </button>
       </div>
 
-      {/* Minimize toggle button (visible on desktop) */}
-      <div className="absolute -right-3 top-20 hidden md:block z-50">
+      {/* Minimize toggle button – visible on all screens */}
+      <div className="absolute -right-3 top-20 z-50">
         <button
           onClick={toggleMinimize}
           className="p-1 rounded-full bg-black border border-neon/50 text-neon hover:bg-neon/10"
@@ -103,7 +100,7 @@ const Sidebar = ({ darkMode, toggleDarkMode, onClose }) => {
         </button>
       </div>
 
-      {/* Profile Section with Glow */}
+      {/* Profile Section */}
       <div className={`flex flex-col items-center py-6 px-4 border-b border-neon/30 ${isMinimized ? 'px-2' : ''}`}>
         <div className="relative">
           <div className={`rounded-full border-2 border-neon flex items-center justify-center bg-black/50 shadow-lg shadow-neon/20 ${isMinimized ? 'w-12 h-12' : 'w-20 h-20'}`}>
@@ -134,7 +131,7 @@ const Sidebar = ({ darkMode, toggleDarkMode, onClose }) => {
         )}
       </div>
 
-      {/* Navigation Links with Group Headers */}
+      {/* Navigation Links */}
       <nav className="flex-1 px-3 py-4 overflow-y-auto">
         {navGroups.map((group, idx) => (
           <div key={idx} className="mb-4">

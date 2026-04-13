@@ -17,6 +17,7 @@ try {
 const Layout = ({ children }) => {
   const [darkMode, setDarkMode] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [sidebarMinimized, setSidebarMinimized] = useState(false); // new state
   const { isAdmin = false } = useAdmin();
   const navigate = useNavigate();
   const toggleDarkMode = () => setDarkMode(!darkMode);
@@ -43,6 +44,8 @@ const Layout = ({ children }) => {
           darkMode={darkMode}
           toggleDarkMode={toggleDarkMode}
           onClose={() => setMobileSidebarOpen(false)}
+          isMinimized={sidebarMinimized}
+          onMinimizeToggle={() => setSidebarMinimized(!sidebarMinimized)}
         />
       </div>
 
@@ -54,10 +57,10 @@ const Layout = ({ children }) => {
         />
       )}
 
-      {/* Main content – margin-left only on desktop */}
-      <main className="md:ml-64 p-4 md:p-6">
+      {/* Main content – margin adjusts based on sidebar state (desktop only) */}
+      <main className={`md:transition-all md:duration-300 p-4 md:p-6 ${sidebarMinimized ? 'md:ml-20' : 'md:ml-72'}`}>
         <div className="max-w-6xl mx-auto">
-          {/* Admin Quick Access Button (unchanged) */}
+          {/* Admin Quick Access Button */}
           <div className="fixed bottom-4 right-4 z-50">
             <button
               onClick={() => navigate('/admin')}
